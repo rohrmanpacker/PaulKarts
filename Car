@@ -1,1 +1,16 @@
+package paulkarts;
 
+import javafx.scene.canvas.*;
+
+public abstract class Car extends Canvas{
+	private int r, g, b; //holds the rgb values of the color of the cart
+  
+  //constructor, takes an x and y value for the bottom left corner of the car, as well as an rgb value for the color
+  public Car(int startingX, int startingY, int r, int g, int b)
+  {
+	  r = r;
+	  g = g;
+	  b = b;
+	  //assign x and y
+  }
+}

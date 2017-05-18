@@ -19,11 +19,12 @@ public class PaulKarts extends Application{
 		primaryStage.setHeight(600);
 		
 		Group root = new Group();
-		Canvas canvas = new Canvas(800,600);
+		Canvas canvas = new Canvas(800,600);//background
 		root.getChildren().add(canvas);
-		GraphicsContext gc = canvas.getGraphicsContext2D();
+		GraphicsContext gc = canvas.getGraphicsContext2D();//this is the background
 		
 		ArrayList<Car> cars = new ArrayList<Car>();
+		cars.add(new Car(700,400));//example 
 		
 		
 		

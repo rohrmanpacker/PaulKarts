@@ -4,32 +4,48 @@ import java.util.ArrayList;
 
 import javafx.application.*;
 import javafx.scene.Group;
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 
 public class PaulKarts extends Application{
 	public static void main(String[] args){
 		Application.launch(args);
 	}
-	
-	
+
+
 	public void start(Stage primaryStage) throws Exception {
-		primaryStage.setWidth(800);
-		primaryStage.setHeight(600);
+		int width = 800, height = 600;
+		
+		primaryStage.setWidth(width);
+		primaryStage.setHeight(height);
 		
 		Group root = new Group();
-		Canvas canvas = new Canvas(800,600);//background
+		Canvas canvas2 = new Canvas();
+		Canvas canvas = new Canvas(width,height);//background
 		root.getChildren().add(canvas);
 		GraphicsContext gc = canvas.getGraphicsContext2D();//this is the background
+		Paint p = Color.rgb(0, 255, 255);
 		
+		
+		gc.setStroke(p);
+		gc.setFill(Color.BLUE);
+		gc.strokeOval(10, 10, 40, 40);
+		
+
 		ArrayList<Car> cars = new ArrayList<Car>();
 		cars.add(new Car(700,400));//example 
-		
-		
-		
+
+		for(int i =0;i<cars.size();i++)//adds the cars to the scene
+			root.getChildren().add(cars.get(i));
+
+		Scene scene = new Scene(root,width,height);
+		primaryStage.setScene(scene);
 		primaryStage.setTitle("PAULKARTS");
 		primaryStage.show();
 	}
-	
+
 }

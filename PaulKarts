@@ -24,7 +24,6 @@ public class PaulKarts extends Application{
 		primaryStage.setHeight(height);
 		
 		Group root = new Group();
-		Canvas canvas2 = new Canvas();
 		Canvas canvas = new Canvas(width,height);//background
 		root.getChildren().add(canvas);
 		GraphicsContext gc = canvas.getGraphicsContext2D();//this is the background
@@ -32,8 +31,16 @@ public class PaulKarts extends Application{
 		
 		
 		gc.setStroke(p);
-		gc.setFill(Color.BLUE);
 		gc.strokeOval(10, 10, 40, 40);
+		
+		//this is he outside border
+		gc.setFill(Color.BLACK);
+		gc.fillRect(0, 0, 10, height);//left
+		gc.fillRect(0, 0, width, 10);//top
+		gc.fillRect(width-10, 0, 10, height);//right
+		gc.fillRect(0, height-10, width, 10);//bottom
+		
+		
 		
 
 		ArrayList<Car> cars = new ArrayList<Car>();

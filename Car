@@ -1,16 +1,52 @@
 package paulkarts;
 
 import javafx.scene.canvas.*;
+import javafx.scene.image.Image;
 
 public abstract class Car extends Canvas{
-	private int r, g, b; //holds the rgb values of the color of the cart
-  
+  private Image image;		//contains the image that will represent the car
+  private double positionX;	//contains the x position on the scene
+  private double positionY; //contains the y position on the scene
+  private double velocityX; //contains the velocity of the sprite in the x direction
+  private double velocityY; //contains the velocity of the sprite in the y direction
+  private double width;		//contains the width of the sprite
+  private double height;	//contains the height of the sprite
+
   //constructor, takes an x and y value for the bottom left corner of the car, as well as an rgb value for the color
   public Car(int startingX, int startingY, int r, int g, int b)
   {
-	  r = r;
+	  r = r;	//sets the rgb color values
 	  g = g;
 	  b = b;
 	  //assign x and y
+  }
+  
+  
+  
+
+
+  // ...
+  // methods omitted for brevity
+  // ...
+
+  public void update(double time)
+  {
+      positionX += velocityX * time;
+      positionY += velocityY * time;
+  }
+
+  public void render(GraphicsContext gc)
+  {
+      gc.drawImage( image, positionX, positionY );
+  }
+
+  public Rectangle2D getBoundary()
+  {
+      return new Rectangle2D(positionX,positionY,width,height);
+  }
+
+  public boolean intersects(Sprite s)
+  {
+      return s.getBoundary().intersects( this.getBoundary() );
   }
 }

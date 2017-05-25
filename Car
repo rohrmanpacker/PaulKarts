@@ -21,6 +21,14 @@ public abstract class Car extends Canvas{
   public Car(int startingX, int startingY){
 	  this(startingX,startingY, Color.rgb((int)Math.random()*256,(int)Math.random()*256,(int)Math.random()*256));	  
   }
+
+  public Car(int[] startingPos){
+	  this(startingPos[0],startingPos[1]);	  
+  }
+  
+  public Car(int[] startingPos, Color c){
+	  this(startingPos[0],startingPos[1],c);	  
+  }
   
   
   

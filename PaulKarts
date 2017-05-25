@@ -12,6 +12,7 @@ import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 
 public class PaulKarts extends Application{
+	private int[][] defaultPositions = {{600,500},{700,500}};
 	public static void main(String[] args){
 		Application.launch(args);
 	}
@@ -40,15 +41,17 @@ public class PaulKarts extends Application{
 		gc.fillRect(width-10, 0, 10, height);//right
 		gc.fillRect(0, height-10, width, 10);//bottom
 		
-		
-		
 
 		ArrayList<Car> cars = new ArrayList<Car>();
-		cars.add(new Car(700,400));//example 
-
+		for(int i = 0;i<defaultPositions.length;i++){
+			cars.add(new Car(defaultPositions[i]));
+		}
+		
+		
 		for(int i =0;i<cars.size();i++)//adds the cars to the scene
 			root.getChildren().add(cars.get(i));
 
+		
 		Scene scene = new Scene(root,width,height);
 		primaryStage.setScene(scene);
 		primaryStage.setTitle("PAULKARTS");

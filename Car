@@ -2,8 +2,9 @@ package paulkarts;
 
 import javafx.scene.canvas.*;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 
-public abstract class Car extends Canvas{
+public class Car extends Canvas{
   private Image image;		//contains the image that will represent the car
   private double positionX;	//contains the x position on the scene
   private double positionY; //contains the y position on the scene
@@ -13,25 +14,27 @@ public abstract class Car extends Canvas{
   private double height;	//contains the height of the sprite
 
   //constructor, takes an x and y value for the bottom left corner of the car, as well as a color
-  public Car(int startingX, int startingY, Color c){
+  public Car(double startingX, double startingY, Color c){
 	  
-	  //TODO assign x and y
+	  positionX = startingX;
+	  positionY = startingY;
+	  
+	  velocityX = 0;
+	  velocityY = 0;
+	  
   }
   
-  public Car(int startingX, int startingY){
-	  this(startingX,startingY, Color.rgb((int)Math.random()*256,(int)Math.random()*256,(int)Math.random()*256));	  
+  public Car(double startingX, double startingY){
+	this(startingX,startingY, Color.rgb((int)Math.random()*256,(int)Math.random()*256,(int)Math.random()*256));	  
   }
-
-  public Car(int[] startingPos){
+  
+  public Car(double[] startingPos){
 	  this(startingPos[0],startingPos[1]);	  
   }
   
-  public Car(int[] startingPos, Color c){
+  public Car(double[] startingPos, Color c){
 	  this(startingPos[0],startingPos[1],c);	  
   }
-  
-  
-  
   
 
 

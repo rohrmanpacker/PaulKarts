@@ -1,5 +1,6 @@
 package paulkarts;
 
+import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.*;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
@@ -35,8 +36,6 @@ public class Car extends Canvas{
   public Car(double[] startingPos, Color c){
 	  this(startingPos[0],startingPos[1],c);	  
   }
-  
-
 
   // ...
   // methods omitted for brevity

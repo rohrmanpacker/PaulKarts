@@ -12,13 +12,16 @@ public abstract class Car extends Canvas{
   private double width;		//contains the width of the sprite
   private double height;	//contains the height of the sprite
 
-  //constructor, takes an x and y value for the bottom left corner of the car, as well as an rgb value for the color
-  public Car(int startingX, int startingY, String color)
-  {
-	  if (color.equals(""))
-		  
-	  //assign x and y
+  //constructor, takes an x and y value for the bottom left corner of the car, as well as a color
+  public Car(int startingX, int startingY, Color c){
+	  
+	  //TODO assign x and y
   }
+  
+  public Car(int startingX, int startingY){
+	  this(startingX,startingY, Color.rgb((int)Math.random()*256,(int)Math.random()*256,(int)Math.random()*256));	  
+  }
+  
   
   
   

@@ -7,8 +7,8 @@ public class Sprite
     private Image image;
     private double positionX;
     private double positionY;    
-    private double velocityX;
-    private double velocityY;
+    private double velocity;
+    private double angle;
     private double width;
     private double height;
 
@@ -16,8 +16,8 @@ public class Sprite
     {
         positionX = 0;
         positionY = 0;    
-        velocityX = 0;
-        velocityY = 0;
+        velocity = 0;
+        angle = 90;
     }
 
     public void setImage(Image i)
@@ -39,22 +39,20 @@ public class Sprite
         positionY = y;
     }
 
-    public void setVelocity(double x, double y)
+    public void setVelocity(double v)
     {
-        velocityX = x;
-        velocityY = y;
+        velocity = v;
     }
 
-    public void addVelocity(double x, double y)
+    public void addVelocity(double v)
     {
-        velocityX += x;
-        velocityY += y;
+        velocity += v;
     }
 
     public void update(double time)
     {
-        positionX += velocityX * time;
-        positionY += velocityY * time;
+        positionX += velocity * time * Math.cos(this.angle);
+        positionY += velocity * time * Math.sin(this.angle);
     }
 
     public void render(GraphicsContext gc)
@@ -75,6 +73,6 @@ public class Sprite
     public String toString()
     {
         return " Position: [" + positionX + "," + positionY + "]" 
-        + " Velocity: [" + velocityX + "," + velocityY + "]";
+        + " Velocity: [" + velocity + "]" + " Angle: [" + angle + "]";
     }
 }

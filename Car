@@ -9,8 +9,8 @@ public class Car extends Canvas{
   private Image image;				//contains the image that will represent the car
   private double positionX;			//contains the x position on the scene
   private double positionY; 		//contains the y position on the scene
-  private double velocityX; 		//contains the velocity of the sprite in the x direction
-  private double velocityY; 		//contains the velocity of the sprite in the y direction
+  private double velocity; 			//contains the velocity of the sprite
+  private double angle; 			//contains the angle at which the sprite is moving
   private final double maxSpeed;	//contains the maximum velocity that the sprite can go in either the x or y 
   									//direction
   private double width;				//contains the width of the sprite
@@ -22,8 +22,8 @@ public class Car extends Canvas{
 	  positionX = startingX;
 	  positionY = startingY;
 	  
-	  velocityX = 0;
-	  velocityY = 0;
+	  velocity = 0;
+	  angle = 90;
 	  
   }
   
@@ -64,5 +64,8 @@ public class Car extends Canvas{
       return s.getBoundary().intersects( this.getBoundary() );
   }
   
-  public void accelerate()
+  public void accelerate(double rate)
+  {
+	  velocity += rate;
+  }
 }

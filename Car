@@ -6,13 +6,15 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 public class Car extends Canvas{
-  private Image image;		//contains the image that will represent the car
-  private double positionX;	//contains the x position on the scene
-  private double positionY; //contains the y position on the scene
-  private double velocityX; //contains the velocity of the sprite in the x direction
-  private double velocityY; //contains the velocity of the sprite in the y direction
-  private double width;		//contains the width of the sprite
-  private double height;	//contains the height of the sprite
+  private Image image;				//contains the image that will represent the car
+  private double positionX;			//contains the x position on the scene
+  private double positionY; 		//contains the y position on the scene
+  private double velocityX; 		//contains the velocity of the sprite in the x direction
+  private double velocityY; 		//contains the velocity of the sprite in the y direction
+  private final double maxSpeed;	//contains the maximum velocity that the sprite can go in either the x or y 
+  									//direction
+  private double width;				//contains the width of the sprite
+  private double height;			//contains the height of the sprite
 
   //constructor, takes an x and y value for the bottom left corner of the car, as well as a color
   public Car(double startingX, double startingY, Color c){
@@ -61,4 +63,6 @@ public class Car extends Canvas{
   {
       return s.getBoundary().intersects( this.getBoundary() );
   }
+  
+  public void accelerate()
 }

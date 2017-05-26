@@ -56,9 +56,9 @@ public class PaulKarts extends Application{
 		primaryStage.setScene(scene);
 		primaryStage.setTitle("PAULKARTS");
 		
-		final long startNanoTime = System.nanoTime();	
+		final long startNanoTime = System.nanoTime();//getting nanotime for animation uses
 		
-	    new AnimationTimer()
+	    new AnimationTimer()//this animates
 	    {
 	        public void handle(long currentNanoTime)
 	        {

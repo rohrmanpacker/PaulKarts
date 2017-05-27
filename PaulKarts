@@ -1,20 +1,24 @@
 package paulkarts;
 
+
 import java.util.ArrayList;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.*;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 
 
 public class PaulKarts extends Application{
-	private int[][] defaultPositions = {{600,500},{700,500}};
+	private double[][] defaultPositions = {{550,400},{625,400}};
 	public static void main(String[] args){
 		Application.launch(args);
 	}
@@ -22,54 +26,93 @@ public class PaulKarts extends Application{
 
 	public void start(Stage primaryStage) throws Exception {
 		int width = 800, height = 600;
-		
-		primaryStage.setWidth(800);
-		primaryStage.setHeight(622);
-		
+
+		primaryStage.setWidth(width);
+		primaryStage.setHeight(height);
+
 		Group root = new Group();
 		Canvas canvas = new Canvas(width,height);//background
 		root.getChildren().add(canvas);
 		GraphicsContext gc = canvas.getGraphicsContext2D();//this is the background
-		Paint p = Color.rgb(0, 255, 255);
-		
-		
-		
-		gc.setStroke(p);
-		gc.strokeOval(10, 10, 40, 40);
-		gc.strokeRect(10, 30, width-20, height-40);
-		
-		//this is he outside border
-		gc.setFill(Color.BLACK);
-		gc.fillRect(0, 0, 10, height);//left
-		gc.fillRect(0, 0, width, 10);//top
-		gc.fillRect(width-10, 0, 10, height);//right
-		gc.fillRect(0, height-10, width, 10);//bottom
-		
 
-		ArrayList<Car> cars = new ArrayList<Car>();
-		for(int i = 0;i<defaultPositions.length;i++){
-			//cars.add(new Car(defaultPositions[i]));TODO fix this
+
+
+
+		ArrayList<Car> cars = new ArrayList<Car>();//array of cars
+
+		for(int i = 0;i<defaultPositions.length;i++){//makes all the cars that there are default positions for
+			cars.add(new Car(defaultPositions[i][0],defaultPositions[i][1]));//makes the cars
 		}
-		
-		
+
+		for(Car c:cars)
+			c.setImage("car1.png");
+
+
+
 		Scene scene = new Scene(root,width,height);
+
+		ArrayList<String> input = new ArrayList<String>();
+		scene.setOnKeyPressed(
+				new EventHandler<KeyEvent>(){
+					public void handle(KeyEvent e){
+						String code = e.getCode().toString();
+						if(!input.contains(code)){
+							input.add(code);
+						}
+					}
+				}
+				);//this makes the input array have the inputs in String form so we can use them later
+
+		scene.setOnKeyReleased(
+				new EventHandler<KeyEvent>(){
+					public void handle(KeyEvent e){
+						String code = e.getCode().toString();
+						input.remove(code);
+					}
+				}
+				);//this takes the code out of input if it is no longer being pressed
+
 		primaryStage.setScene(scene);
 		primaryStage.setTitle("PAULKARTS");
-		
+
 		final long startNanoTime = System.nanoTime();//getting nanotime for animation uses
-		
-	    new AnimationTimer()//this animates
-	    {
-	        public void handle(long currentNanoTime)
-	        {
-	            double t = (currentNanoTime - startNanoTime) / 1000000000.0; 
-	            for(Car c:cars){
-	            	
-	            }
-	            
-	        }
-	    }.start();
-		
+
+		new AnimationTimer()//this animates
+		{
+			public void handle(long currentNanoTime)
+			{
+				double t = (currentNanoTime - startNanoTime) / 1000000000.0; 
+				gc.clearRect(0, 0, width, height);//clears the canvas
+				//this is he outside border
+				gc.setFill(Color.BLACK);
+				gc.fillRect(0, 0, 10, height);//left
+				gc.fillRect(0, 0, width, 10);//top
+				gc.fillRect(width-10, 0, 10, height);//right
+				gc.fillRect(0, height-10, width, 10);//bottom
+
+
+				for(Car c:cars){//this does all the cars
+					if(input.contains("W")){
+						c.addVelocity(.01);
+					}
+					if(input.contains("S")){
+						c.addVelocity(-.01);
+					}
+					if(input.contains("A")){
+						c.rotate(-1);
+					}
+					if(input.contains("D")){
+						c.rotate(1);
+					}
+					c.update(t);
+					gc.drawImage(c.getImage(),c.getX(),c.getY());
+					
+				}
+
+
+			}
+		}.start();
+
 		primaryStage.show();
 	}
 

@@ -1,8 +1,10 @@
+package paulkarts;
+
 import javafx.scene.image.Image;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.geometry.Rectangle2D;
 
-public class Sprite
+public class Car
 {
     private Image image;
     private double positionX;
@@ -12,7 +14,7 @@ public class Sprite
     private double width;
     private double height;
 
-    public Sprite()
+    public Car()
     {
         positionX = 0;
         positionY = 0;    
@@ -65,7 +67,7 @@ public class Sprite
         return new Rectangle2D(positionX,positionY,width,height);
     }
 
-    public boolean intersects(Sprite s)
+    public boolean intersects(Car s)
     {
         return s.getBoundary().intersects( this.getBoundary() );
     }

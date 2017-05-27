@@ -1,80 +1,105 @@
 package paulkarts;
 
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.geometry.Rectangle2D;
 
 public class Car
 {
-    private Image image;
-    private double positionX;
-    private double positionY;    
-    private double velocity;
-    private double angle;
-    private double width;
-    private double height;
+	private ImageView imageView;
+	private double positionX;
+	private double positionY;    
+	private double velocity;
+	private double angle;
+	private double width;
+	private double height;
 
-    public Car()
-    {
-        positionX = 0;
-        positionY = 0;    
-        velocity = 0;
-        angle = 90;
-    }
 
-    public void setImage(Image i)
-    {
-        image = i;
-        width = i.getWidth();
-        height = i.getHeight();
-    }
 
-    public void setImage(String filename)
-    {
-        Image i = new Image(filename);
-        setImage(i);
-    }
+	public Car(double x, double y){
+		imageView =new ImageView();
+		imageView.setRotate(0);
+		positionX=x;
+		positionY=y;
+		velocity = 0;
+		angle = 270;
+	}
 
-    public void setPosition(double x, double y)
-    {
-        positionX = x;
-        positionY = y;
-    }
+	public Car()
+	{
+		this(0,0);    
+	}
 
-    public void setVelocity(double v)
-    {
-        velocity = v;
-    }
+	public void setImage(Image i)
+	{
+		imageView.setImage(i);
+		width = i.getWidth();
+		height = i.getHeight();
+	}
 
-    public void addVelocity(double v)
-    {
-        velocity += v;
-    }
+	public void setImage(String filename)
+	{
+		Image i = new Image(filename);
+		setImage(i);
+	}
 
-    public void update(double time)
-    {
-        positionX += velocity * time * Math.cos(this.angle);
-        positionY += velocity * time * Math.sin(this.angle);
-    }
+	public Image getImage(){
+		return imageView.getImage();
+	}
 
-    public void render(GraphicsContext gc)
-    {
-        gc.drawImage( image, positionX, positionY );
-    }
+	public double getX(){
+		return positionX;
+	}
+	public double getY(){
+		return positionY;
+	}
 
-    public Rectangle2D getBoundary()
-    {
-        return new Rectangle2D(positionX,positionY,width,height);
-    }
+	public void setPosition(double x, double y)
+	{
+		positionX = x;
+		positionY = y;
+	}
 
-    public boolean intersects(Car s)
-    {
-        return s.getBoundary().intersects( this.getBoundary() );
-    }
-    
-    public String toString()
-    {
-        return " Position: [" + positionX + "," + positionY + "]" 
-        + " Velocity: [" + velocity + "]" + " Angle: [" + angle + "]";
-    }
+	public void rotate(double angleChange){
+		angle+=angleChange;
+		imageView.setRotate(angle);
+	}
+
+	public void setVelocity(double v)
+	{
+		velocity = v;
+	}
+
+	public void addVelocity(double v)
+	{
+		velocity += v;
+	}
+
+	public void update(double time)
+	{
+		positionX += velocity * time * Math.cos(Math.toRadians(angle));
+		positionY += velocity * time * Math.sin(Math.toRadians(angle));
+	}
+
+	public void render(GraphicsContext gc)
+	{
+		gc.drawImage( imageView.getImage(), positionX, positionY );
+	}
+
+	public Rectangle2D getBoundary()
+	{
+		return new Rectangle2D(positionX,positionY,width,height);
+	}
+
+	public boolean intersects(Car s)
+	{
+		return s.getBoundary().intersects( this.getBoundary() );
+	}
+
+	public String toString()
+	{
+		return " Position: [" + positionX + "," + positionY + "]" 
+				+ " Velocity: [" + velocity + "]" + " Angle: [" + angle + "]";
+	}
 }

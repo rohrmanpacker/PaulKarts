@@ -12,8 +12,10 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 
@@ -27,12 +29,15 @@ public class PaulKarts extends Application{
 	public void start(Stage primaryStage) throws Exception {
 		int width = 800, height = 600;
 
-		primaryStage.setWidth(width);
-		primaryStage.setHeight(height);
+		primaryStage.setWidth(width+16);//idk why this works but it does
+		primaryStage.setHeight(height+39);
 
-		Group root = new Group();
+		Text txt=new Text();
+		
+		
+		VBox root = new VBox();
 		Canvas canvas = new Canvas(width,height);//background
-		root.getChildren().add(canvas);
+		root.getChildren().addAll(canvas,txt);
 		GraphicsContext gc = canvas.getGraphicsContext2D();//this is the background
 
 
@@ -77,26 +82,27 @@ public class PaulKarts extends Application{
 
 		final long startNanoTime = System.nanoTime();//getting nanotime for animation uses
 
-		new AnimationTimer()//this animates
+		new AnimationTimer()//this is like the game timer
 		{
 			public void handle(long currentNanoTime)
 			{
 				double t = (currentNanoTime - startNanoTime) / 1000000000.0; 
 				gc.clearRect(0, 0, width, height);//clears the canvas
+				gc.strokeRect(0, 0, width, height);
 				//this is he outside border
 				gc.setFill(Color.BLACK);
 				gc.fillRect(0, 0, 10, height);//left
 				gc.fillRect(0, 0, width, 10);//top
 				gc.fillRect(width-10, 0, 10, height);//right
 				gc.fillRect(0, height-10, width, 10);//bottom
-
-
+				
+				 
 				for(Car c:cars){//this does all the cars
 					if(input.contains("W")){
-						c.addVelocity(.01);
+						c.accelerate(.002);
 					}
 					if(input.contains("S")){
-						c.addVelocity(-.01);
+						c.accelerate(-.002);
 					}
 					if(input.contains("A")){
 						c.rotate(-1);
@@ -105,10 +111,11 @@ public class PaulKarts extends Application{
 						c.rotate(1);
 					}
 					c.update(t);
-					gc.drawImage(c.getImage(),c.getX(),c.getY());
+					c.render(gc);
+					
 					
 				}
-
+				txt.setText(""+cars.get(0).getVelocity()+"\t"+cars.get(0).getAcceleration());
 
 			}
 		}.start();

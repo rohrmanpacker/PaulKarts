@@ -14,7 +14,7 @@ public class Car
 	private double angle;
 	private double width;
 	private double height;
-
+	private double acceleration;
 
 
 	public Car(double x, double y){
@@ -23,6 +23,7 @@ public class Car
 		positionX=x;
 		positionY=y;
 		velocity = 0;
+		acceleration=0;
 		angle = 270;
 	}
 
@@ -54,6 +55,9 @@ public class Car
 	public double getY(){
 		return positionY;
 	}
+	public double getAcceleration(){return acceleration;}
+	public double getVelocity(){return velocity;}
+	public double getAngle(){return angle;}
 
 	public void setPosition(double x, double y)
 	{
@@ -75,11 +79,36 @@ public class Car
 	{
 		velocity += v;
 	}
-
-	public void update(double time)
+	
+	public void accelerate(double a){
+		acceleration+=a;
+	}
+	
+	public void update(double time)//this is what gets run to update the position. vel, accel, etc.
 	{
+		velocity += acceleration*time/10;
+		
+		if(velocity>.1){//sets max speed
+			velocity=.1;
+		}else if(velocity<-.1){
+			velocity =-.1;
+		}
+		if(acceleration>1){//sets max acceleration
+			acceleration=1;
+		}else if(acceleration<-1){
+			acceleration =-1;
+		}
+		
 		positionX += velocity * time * Math.cos(Math.toRadians(angle));
 		positionY += velocity * time * Math.sin(Math.toRadians(angle));
+		if(velocity>0){//slowing down
+			velocity-=.001;
+		}else if(velocity<0){
+			velocity+=.001;
+		}
+		acceleration=0;
+		imageView.setRotate(angle);
+		
 	}
 
 	public void render(GraphicsContext gc)

@@ -19,7 +19,7 @@ public class Car
 
 	public Car(double x, double y){
 		imageView =new ImageView();
-		imageView.setRotate(0);
+		imageView.setRotate(90);
 		positionX=x;
 		positionY=y;
 		velocity = 0;
@@ -37,6 +37,7 @@ public class Car
 		imageView.setImage(i);
 		width = i.getWidth();
 		height = i.getHeight();
+		imageView.setRotate(angle);
 	}
 
 	public void setImage(String filename)
@@ -48,6 +49,8 @@ public class Car
 	public Image getImage(){
 		return imageView.getImage();
 	}
+	
+	public ImageView getImageView(){return imageView;}
 
 	public double getX(){
 		return positionX;
@@ -84,8 +87,11 @@ public class Car
 		acceleration+=a;
 	}
 	
+	
+	
 	public void update(double time)//this is what gets run to update the position. vel, accel, etc.
 	{
+		imageView.setRotate(angle);
 		velocity += acceleration*time/10;
 		
 		if(velocity>.1){//sets max speed
@@ -106,8 +112,12 @@ public class Car
 		}else if(velocity<0){
 			velocity+=.001;
 		}
+		if(velocity<.001&&velocity>0||velocity>-.001&&velocity<0){//gets rid of rounding errors 
+			velocity=0;
+		}
+		
 		acceleration=0;
-		imageView.setRotate(angle);
+		
 		
 	}
 

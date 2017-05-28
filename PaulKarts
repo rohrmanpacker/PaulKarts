@@ -8,8 +8,10 @@ import javafx.application.*;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
@@ -40,15 +42,15 @@ public class PaulKarts extends Application{
 		root.getChildren().addAll(canvas,txt);
 		GraphicsContext gc = canvas.getGraphicsContext2D();//this is the background
 
-
-
-
+		
+        
 		ArrayList<Car> cars = new ArrayList<Car>();//array of cars
 
 		for(int i = 0;i<defaultPositions.length;i++){//makes all the cars that there are default positions for
 			cars.add(new Car(defaultPositions[i][0],defaultPositions[i][1]));//makes the cars
 		}
-
+		
+		root.getChildren().add(cars.get(0).getImageView());
 		for(Car c:cars)
 			c.setImage("car1.png");
 
@@ -96,25 +98,24 @@ public class PaulKarts extends Application{
 				gc.fillRect(width-10, 0, 10, height);//right
 				gc.fillRect(0, height-10, width, 10);//bottom
 				
-				 
-				for(Car c:cars){//this does all the cars
-					if(input.contains("W")){
-						c.accelerate(.002);
-					}
-					if(input.contains("S")){
-						c.accelerate(-.002);
-					}
-					if(input.contains("A")){
-						c.rotate(-1);
-					}
-					if(input.contains("D")){
-						c.rotate(1);
-					}
-					c.update(t);
-					c.render(gc);
-					
-					
+				if(input.contains("W")){
+					cars.get(0).accelerate(.002);
 				}
+				if(input.contains("S")){
+					cars.get(0).accelerate(-.002);
+				}
+				if(input.contains("A")){
+					cars.get(0).rotate(-1);
+				}
+				if(input.contains("D")){
+					cars.get(0).rotate(1);
+				}
+				for(Car c:cars){//this does all the cars
+					c.update(t);
+					c.render(gc);	
+				}
+				
+				
 				txt.setText(""+cars.get(0).getVelocity()+"\t"+cars.get(0).getAcceleration());
 
 			}

@@ -1,49 +1,142 @@
 package paulkarts;
 
+
 import java.util.ArrayList;
+
+import javafx.animation.AnimationTimer;
+import javafx.application.*;
+import javafx.event.EventHandler;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.SnapshotParameters;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
-public class Border{
-	private int width, height;
-	
-	public Border(int height, int width){
-		this.height=height;
-		this.width=width;
-	}
-	
-	public Border(){
-		this(600,800);
-	}
-	
-	public ArrayList<Rectangle2D> getBorder(){
-		ArrayList<Rectangle2D> borders = new ArrayList<Rectangle2D>();
-		
-		
-		return borders;
-	}
-	
-	public static ArrayList<Rectangle2D> getBorder(int height, int width){
-		ArrayList<Rectangle2D> borders = new ArrayList<Rectangle2D>();
-		borders.add(new Rectangle2D(0,0,width,5));//top
-		borders.add(new Rectangle2D(0,0,5,height));//left
-		borders.add(new Rectangle2D(width-5,0,width,height));//right
-		borders.add(new Rectangle2D(0,height-5,width,height));//bottom
-		
-		
-		return borders;
-	}
-	public static void drawBoundries(GraphicsContext gc,int height,int width){
-		gc.setFill(Color.CHOCOLATE);
-		gc.setStroke(Color.BLACK);
-		gc.fillRect(0,0,width,5);
-		gc.fillRect(0,0,5,height);
-		gc.fillRect(width-5,0,width,height);
-		gc.fillRect(0,height-5,width,height);
-		
+
+public class PaulKarts extends Application{
+	private double[][] defaultPositions = {{550,400},{625,400}};
+	public static void main(String[] args){
+		Application.launch(args);
 	}
 
-//cars.get(0).rotate(canvas.getGraphicsContext2D(), -2, cars.get(0).getX() + 8 + cars.get(0).getImage().getWidth() / 2, cars.get(0).getY() + 8 + cars.get(0).getImage().getHeight() / 2);
-//cars.get(0).drawRotatedImage(canvas.getGraphicsContext2D(),cars.get(0).getImage(), -100, cars.get(0).getX() + 8, cars.get(0).getY() + 8);
+
+	public void start(Stage primaryStage) throws Exception {
+		int width = 800, height = 600;
+
+		primaryStage.setWidth(width+16);//idk why this works but it does
+		primaryStage.setHeight(height+39);
+
+		Text txt=new Text();
+
+
+		VBox root = new VBox();
+		Canvas canvas = new Canvas(width,height);//background
+		root.getChildren().addAll(canvas,txt);
+		GraphicsContext gc = canvas.getGraphicsContext2D();//this is the background
+
+
+
+		ArrayList<Car> cars = new ArrayList<Car>();//array of cars
+
+		for(int i = 0;i<defaultPositions.length;i++){//makes all the cars that there are default positions for
+			cars.add(new Car(defaultPositions[i][0],defaultPositions[i][1]));//makes the cars
+		}
+
+		root.getChildren().add(cars.get(0).getImageView());
+		for(Car c:cars)
+			c.setImage("car1.png");
+
+
+
+		Scene scene = new Scene(root,width,height);
+
+		ArrayList<String> input = new ArrayList<String>();
+		scene.setOnKeyPressed(
+				new EventHandler<KeyEvent>(){
+					public void handle(KeyEvent e){
+						String code = e.getCode().toString();
+						if(!input.contains(code)){
+							input.add(code);
+						}
+					}
+				}
+				);//this makes the input array have the inputs in String form so we can use them later
+
+		scene.setOnKeyReleased(
+				new EventHandler<KeyEvent>(){
+					public void handle(KeyEvent e){
+						String code = e.getCode().toString();
+						input.remove(code);
+					}
+				}
+				);//this takes the code out of input if it is no longer being pressed
+
+		primaryStage.setScene(scene);
+		primaryStage.setTitle("PAULKARTS");
+
+		ArrayList<Rectangle2D> borders=Border.getBorder(height, width);
+
+
+		final long startNanoTime = System.nanoTime();//getting nanotime for animation uses
+		double[] pastNanoTime = new double[1];
+		new AnimationTimer()//this is like the game timer
+		{
+			public void handle(long currentNanoTime)
+			{
+				double t = (currentNanoTime - startNanoTime) / 1000000000.0; //t is the total change in time since the start
+				gc.clearRect(0, 0, width, height);//clears the canvas
+				gc.strokeRect(0, 0, width, height);
+				//this is he outside border
+				/*gc.setFill(Color.BLACK);
+				gc.fillRect(0, 0, 10, height);//left
+				gc.fillRect(0, 0, width, 10);//top
+				gc.fillRect(width-10, 0, 10, height);//right
+				gc.fillRect(0, height-10, width, 10);//bottom
+				 */
+				Border.drawBoundries(gc, height, width);
+
+				if(input.contains("W")){
+					cars.get(0).accelerate(.002);
+				}
+				if(input.contains("S")){
+					cars.get(0).accelerate(-.002);
+				}
+				if(input.contains("A")){
+					cars.get(0).rotate(-2);
+				}
+				if(input.contains("D")){
+					cars.get(0).rotate(2);
+				}
+				for(Rectangle2D rect:borders){
+					if(rect.contains(cars.get(0).getBoundary())){
+						/*cars.get(0).setVelocity(0);
+						cars.get(0).setAcceleration(0);
+						 */
+						cars.get(0).crash();
+					}
+				}
+				for(Car c:cars){//this does all the cars
+					c.update(40);//pastNanoTime[0]-t is the change in time
+					c.render(gc);	
+				}
+
+
+
+				txt.setText(""+cars.get(0).getVelocity()+"\t"+cars.get(0).getAcceleration());
+				pastNanoTime[0]=t;
+			}
+		}.start();
+
+		primaryStage.show();
+	}
+
 }

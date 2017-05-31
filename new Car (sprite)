@@ -4,7 +4,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.transform.Rotate;
 
 public class Car
 {
@@ -151,7 +150,8 @@ public class Car
 		return " Position: [" + positionX + "," + positionY + "]" 
 				+ " Velocity: [" + velocity + "]" + " Angle: [" + angle + "]";
 	}
-	
+
+
 	/**
      	* Sets the transform for the GraphicsContext to rotate around a pivot point.
      	*

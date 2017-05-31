@@ -1,0 +1,47 @@
+package paulkarts;
+
+import java.util.ArrayList;
+import javafx.geometry.Rectangle2D;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+
+public class Border{
+	private int width, height;
+	
+	public Border(int height, int width){
+		this.height=height;
+		this.width=width;
+	}
+	
+	public Border(){
+		this(600,800);
+	}
+	
+	public ArrayList<Rectangle2D> getBorder(){
+		ArrayList<Rectangle2D> borders = new ArrayList<Rectangle2D>();
+		
+		
+		return borders;
+	}
+	
+	public static ArrayList<Rectangle2D> getBorder(int height, int width){
+		ArrayList<Rectangle2D> borders = new ArrayList<Rectangle2D>();
+		borders.add(new Rectangle2D(0,0,width,5));//top
+		borders.add(new Rectangle2D(0,0,5,height));//left
+		borders.add(new Rectangle2D(width-5,0,width,height));//right
+		borders.add(new Rectangle2D(0,height-5,width,height));//bottom
+		
+		
+		return borders;
+	}
+	public static void drawBoundries(GraphicsContext gc,int height,int width){
+		gc.setFill(Color.BLACK);
+		gc.setStroke(Color.BLACK);
+		gc.fillRect(0,0,width,5);
+		gc.fillRect(0,0,5,height);
+		gc.fillRect(width-5,0,width,height);
+		gc.fillRect(0,height-5,width,height);
+		
+	}
+
+}

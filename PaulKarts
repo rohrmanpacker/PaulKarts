@@ -46,9 +46,10 @@ public class PaulKarts extends Application{
 
 
 		ArrayList<Car> cars = new ArrayList<Car>();//array of cars
-
+		
 		for(int i = 0;i<defaultPositions.length;i++){//makes all the cars that there are default positions for
 			cars.add(new Car(defaultPositions[i][0],defaultPositions[i][1]));//makes the cars
+			
 		}
 
 		root.getChildren().add(cars.get(0).getImageView());
@@ -96,12 +97,7 @@ public class PaulKarts extends Application{
 				gc.clearRect(0, 0, width, height);//clears the canvas
 				gc.strokeRect(0, 0, width, height);
 				//this is he outside border
-				/*gc.setFill(Color.BLACK);
-				gc.fillRect(0, 0, 10, height);//left
-				gc.fillRect(0, 0, width, 10);//top
-				gc.fillRect(width-10, 0, 10, height);//right
-				gc.fillRect(0, height-10, width, 10);//bottom
-				 */
+				
 				Border.drawBoundries(gc, height, width);
 
 				if(input.contains("W")){
@@ -138,6 +134,9 @@ public class PaulKarts extends Application{
 
 		primaryStage.show();
 	}
+
+
+
 //cars.get(0).rotate(canvas.getGraphicsContext2D(), -2, cars.get(0).getX() + 8 + cars.get(0).getImage().getWidth() / 2, cars.get(0).getY() + 8 + cars.get(0).getImage().getHeight() / 2);
 //cars.get(0).drawRotatedImage(canvas.getGraphicsContext2D(),cars.get(0).getImage(), -100, cars.get(0).getX() + 8, cars.get(0).getY() + 8);
 }

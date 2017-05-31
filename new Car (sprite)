@@ -4,7 +4,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.transform.Rotate;
 
 public class Car
 {
@@ -87,33 +86,42 @@ public class Car
 	public void accelerate(double a){
 		acceleration+=a;
 	}
+	public void setAcceleration(double a){
+		acceleration=a;
+	}
+	public void crash(){
+		
+		angle+=180;
+		acceleration/=2;
+		velocity/=2;
+	}
 	
 	
 	
 	public void update(double time)//this is what gets run to update the position. vel, accel, etc.
 	{
 		imageView.setRotate(angle);
-		velocity += acceleration*time/10;
+		velocity += acceleration*time;
 		
 		if(velocity>.1){//sets max speed
 			velocity=.1;
 		}else if(velocity<-.1){
 			velocity =-.1;
 		}
-		if(acceleration>1){//sets max acceleration
-			acceleration=1;
-		}else if(acceleration<-1){
-			acceleration =-1;
+		if(acceleration>10){//sets max acceleration
+			acceleration=10;
+		}else if(acceleration<-10){
+			acceleration =-10;
 		}
 		
 		positionX += velocity * time * Math.cos(Math.toRadians(angle));
 		positionY += velocity * time * Math.sin(Math.toRadians(angle));
 		if(velocity>0){//slowing down
-			velocity-=.001;
+			velocity-=.01;
 		}else if(velocity<0){
-			velocity+=.001;
+			velocity+=.01;
 		}
-		if(velocity<.001&&velocity>0||velocity>-.001&&velocity<0){//gets rid of rounding errors 
+		if(velocity<.01&&velocity>0||velocity>-.01&&velocity<0){//gets rid of rounding errors 
 			velocity=0;
 		}
 		
@@ -142,36 +150,4 @@ public class Car
 		return " Position: [" + positionX + "," + positionY + "]" 
 				+ " Velocity: [" + velocity + "]" + " Angle: [" + angle + "]";
 	}
-	
-	/**
-     * Sets the transform for the GraphicsContext to rotate around a pivot point.
-     *
-     * @param gc the graphics context the transform to applied to.
-     * @param angle the angle of rotation.
-     * @param px the x pivot co-ordinate for the rotation (in canvas co-ordinates).
-     * @param py the y pivot co-ordinate for the rotation (in canvas co-ordinates).
-     */
-    public void rotate(GraphicsContext gc, double angle, double px, double py) {
-        Rotate r = new Rotate(angle, px, py);
-        gc.setTransform(r.getMxx(), r.getMyx(), r.getMxy(), r.getMyy(), r.getTx(), r.getTy());
-    }
-    
-    /**
-     * Draws an image on a graphics context.
-     *
-     * The image is drawn at (tlpx, tlpy) rotated by angle pivoted around the point:
-     *   (tlpx + image.getWidth() / 2, tlpy + image.getHeight() / 2)
-     *
-     * @param gc the graphics context the image is to be drawn on.
-     * @param angle the angle of rotation.
-     * @param tlpx the top left x co-ordinate where the image will be plotted (in canvas co-ordinates).
-     * @param tlpy the top left y co-ordinate where the image will be plotted (in canvas co-ordinates).
-     */
-    public void drawRotatedImage(GraphicsContext gc, Image image, double angle, double tlpx, double tlpy) {
-        gc.save(); // saves the current state on stack, including the current transform
-        rotate(gc, angle, tlpx + image.getWidth() / 2, tlpy + image.getHeight() / 2);
-        gc.drawImage(image, tlpx, tlpy);
-        gc.restore(); // back to original state (before rotation)
-    }
-
 }

@@ -31,7 +31,10 @@ public class Border{
 		borders.add(new Rectangle2D(width-5,0,width,height));//right
 		borders.add(new Rectangle2D(0,height-5,width,height));//bottom
 		borders.add(new Rectangle2D(.4*width,0,.1*width,.3*height));
-		borders.add(new Rectangle2D(.7*width, .3*height, .1*height, .45*height));
+		borders.add(new Rectangle2D(.7*width, .3*height, .07*width, .45*height));
+		borders.add(new Rectangle2D(.2*width,.5*height,.5*width,.1*height));
+		borders.add(new Rectangle2D(.15*width, .3*height, .07*width, .45*height));
+		
 		
 		return borders;
 	}
@@ -43,7 +46,9 @@ public class Border{
 		gc.fillRect(width-5,0,width,height);
 		gc.fillRect(0,height-5,width,height);
 		gc.fillRect(.4*width,0,.1*width,.3*height);
-		gc.fillRect(.7*width, .3*height, .1*height, .45*height);
+		gc.fillRect(.7*width, .3*height, .07*width, .45*height);
+		gc.fillRect(.2*width,.5*height,.5*width,.1*height);
+		gc.fillRect(.15*width, .3*height, .07*width, .45*height);
 		
 	}
 

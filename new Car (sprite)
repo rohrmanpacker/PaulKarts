@@ -150,7 +150,7 @@ public class Car
 		
 		gc.save();
 		Rotate r = new Rotate(angle+90, positionX + imageView.getImage().getWidth() / 2, positionY + imageView.getImage().getWidth() / 2);
-        	gc.setTransform(r.getMxx(), r.getMyx(), r.getMxy(), r.getMyy(), r.getTx(), r.getTy());
+        gc.setTransform(r.getMxx(), r.getMyx(), r.getMxy(), r.getMyy(), r.getTx(), r.getTy());
 		gc.drawImage( imageView.getImage(), positionX, positionY );
 		gc.restore();
 	}

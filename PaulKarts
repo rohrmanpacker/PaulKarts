@@ -98,7 +98,7 @@ public class PaulKarts extends Application{
 				gc.strokeRect(0, 0, width, height);
 				//this is the border
 				Border.drawBoundries(gc, height, width);
-				
+
 				if(t>=0&&t<1){//this is the starting sequence
 					gc.fillText("START IN", 680, 200);
 				}
@@ -114,7 +114,7 @@ public class PaulKarts extends Application{
 				if(t>=4&&t<6){
 					gc.fillText("GO!", 692, 200);
 				}
-				
+
 				//controlls movement (and you cant go until after it says GO
 				if(t>=4&&input.contains("W")){
 					cars.get(0).accelerate(.002);
@@ -129,15 +129,17 @@ public class PaulKarts extends Application{
 					cars.get(0).rotate(2);
 				}
 				for(Rectangle2D rect:borders){
-					if(rect.contains(cars.get(0).getBoundary())){
-						cars.get(0).crash();
-					}
+					for(Car c:cars)
+						if(rect.contains(c.getBoundary())){
+							c.crash();
+						}
 				}
+
 				for(Car c:cars){//this does all the cars
 					c.update(40);//pastNanoTime[0]-t is the change in time
 					c.render(gc);	
 				}
-				
+
 				txt.setText(""+cars.get(0).getVelocity()+"\t"+cars.get(0).getAcceleration());
 				pastNanoTime[0]=t;
 			}

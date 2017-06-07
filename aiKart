@@ -1,0 +1,25 @@
+package paulkarts;
+
+import java.util.ArrayList;
+
+import javafx.geometry.Rectangle2D;
+
+public class aiKart extends Car{
+	//constructor
+	public aiKart(){
+		super();
+		super.setImage("car2.png");
+	}
+	
+	public void updateAngle(){
+		for(Rectangle2D rect:borders){	//have to get a list of all borders	
+			if (Math.abs(rect.getMinY() - this.getBoundary().getMaxY()) < 30){
+				double temp = Math.abs(rect.getMinY() - this.getBoundary().getMaxY()); //saves the distance to the border
+				super.rotate(-2);	//rotates
+				if (Math.abs(rect.getMinY() - this.getBoundary().getMaxY()) < temp){	//rotates the other way if rotating didn't move farther from the border
+					super.rotate(4);
+				}
+			}
+		}
+	}
+}

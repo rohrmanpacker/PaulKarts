@@ -86,6 +86,7 @@ public class PaulKarts extends Application{
 
 		ArrayList<Rectangle2D> borders=Border.getBorder(height, width);
 		ArrayList<Rectangle2D> turnLefts =Border.getTurnLeft(gc, height, width);
+		ArrayList<Rectangle2D> turnRights =Border.getTurnRight(gc, height, width);
 
 		final long startNanoTime = System.nanoTime();//getting nanotime for animation uses
 		double[] pastNanoTime = new double[1];
@@ -153,6 +154,11 @@ public class PaulKarts extends Application{
 						for(Rectangle2D left:turnLefts){
 							if(left.contains(temp.getBoundary())){
 								temp.rotate(-2);
+							}
+						}
+						for(Rectangle2D right:turnRights){
+							if(right.contains(temp.getBoundary())){
+								temp.rotate(2);
 							}
 						}
 

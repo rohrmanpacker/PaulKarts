@@ -56,12 +56,10 @@ public class Border{
 	
 	public static ArrayList<Rectangle2D> getTurnLeft(GraphicsContext gc,int height, int width){//Rectangle2D(double minX, double minY, double width, double height)
 		ArrayList<Rectangle2D> rects = new ArrayList<Rectangle2D>();
-		rects.add(new Rectangle2D(0,0,width*.4,height*.3));
+		rects.add(new Rectangle2D(0,0,width,height*.3));
+		rects.add(new Rectangle2D(0,height*.75,width*.225,height*.25));
+		rects.add(new Rectangle2D(width*.75,height*.75,width*25,height*25));
 		
-		
-		gc.setFill(Color.BLUE);
-		gc.fillRect(0,0,width*.4,height*.3);
-		gc.setFill(Color.BLACK);
 		return rects;
 		
 	}

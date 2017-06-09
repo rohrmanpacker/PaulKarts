@@ -64,5 +64,18 @@ public class Border{
 		
 	}
 	
+	public static ArrayList<Rectangle2D> getTurnRight(GraphicsContext gc,int height, int width){//Rectangle2D(double minX, double minY, double width, double height)
+		ArrayList<Rectangle2D> rects = new ArrayList<Rectangle2D>();
+		rects.add(new Rectangle2D(.4*width+.1*width,.3*height,.7*width-.4*width,.5*height-height*.3));
+		rects.add(new Rectangle2D(.4*width+.1*width,.3*height,.7*width-.4*width,.5*height-height*.3));
+		
+		
+		/*gc.setFill(Color.RED);
+		gc.fillRect(.4*width+.1*width,.3*height,.7*width-.4*width,.5*height-height*.3);
+		gc.fillRect(.15*width+.07*width,.3*height,.4*width-(.15*width + .07*width),.5*height-height*.3);
+		gc.setFill(Color.BLACK);*/
+		return rects;
+	}
+	
 
 }

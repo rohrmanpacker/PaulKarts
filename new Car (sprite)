@@ -21,7 +21,7 @@ public class Car
 
 	public Car(double x, double y){
 		imageView =new ImageView();
-		imageView.setRotate(90);
+		imageView.setRotate(0);
 		positionX=x;
 		positionY=y;
 		velocity = 0;
@@ -108,6 +108,10 @@ public class Car
 		acceleration/=2;
 		velocity=-velocity/10;
 	}
+	public void crash(double angle){
+		
+	}
+
 
 
 
@@ -147,7 +151,6 @@ public class Car
 
 	public void render(GraphicsContext gc)
 	{
-		
 		gc.save();
 		Rotate r = new Rotate(angle+90, positionX + imageView.getImage().getWidth() / 2, positionY + imageView.getImage().getWidth() / 2);
         gc.setTransform(r.getMxx(), r.getMyx(), r.getMxy(), r.getMyy(), r.getTx(), r.getTy());

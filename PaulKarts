@@ -43,7 +43,7 @@ public class PaulKarts extends Application{
 		root.getChildren().addAll(canvas,txt);
 		GraphicsContext gc = canvas.getGraphicsContext2D();//this is the background
 
-
+		
 
 		ArrayList<Car> cars = new ArrayList<Car>();//array of cars
 
@@ -85,7 +85,7 @@ public class PaulKarts extends Application{
 		primaryStage.setTitle("PAULKARTS");
 
 		ArrayList<Rectangle2D> borders=Border.getBorder(height, width);
-
+		ArrayList<Rectangle2D> turnLefts =Border.getTurnLeft(gc, height, width);
 
 		final long startNanoTime = System.nanoTime();//getting nanotime for animation uses
 		double[] pastNanoTime = new double[1];
@@ -98,7 +98,8 @@ public class PaulKarts extends Application{
 				gc.strokeRect(0, 0, width, height);
 				//this is the border
 				Border.drawBoundries(gc, height, width);
-
+				
+				
 				if(t>=0&&t<1){//this is the starting sequence
 					gc.fillText("START IN", 680, 200);
 				}
@@ -142,14 +143,17 @@ public class PaulKarts extends Application{
 							cars.get(j).crash();
 						}
 					}
+					
 				}
 
 				if(t>=4)
 					for(int i=1;i<cars.size();i++){//this will decide how other cars move
 						Car temp = cars.get(i);
 						temp.accelerate(.002);
-						if(temp.getX()>0){
-
+						for(Rectangle2D left:turnLefts){
+							if(left.contains(temp.getBoundary())){
+								temp.rotate(-2);
+							}
 						}
 
 					}

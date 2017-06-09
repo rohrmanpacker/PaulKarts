@@ -31,7 +31,7 @@ public class PaulKarts extends Application{
 
 	public void start(Stage primaryStage) throws Exception {
 		int width = 800, height = 600;
-
+		Integer test = 0;
 		primaryStage.setWidth(width+16);//idk why this works but it does
 		primaryStage.setHeight(height+39);
 
@@ -128,32 +128,38 @@ public class PaulKarts extends Application{
 				if(t>=4&&input.contains("D")){
 					cars.get(0).rotate(2);
 				}
-				for(Rectangle2D rect:borders){
+				for(int i =0;i<borders.size();i++){
 					for(Car c:cars)
-						if(rect.contains(c.getBoundary())){
+						if(borders.get(i).contains(c.getBoundary())){
 							c.crash();
 						}
 				}
-				for(int i = 0; i<cars.size();i++){
-					for(int j=0;j<cars.size();j++){
+
+				for(int i = 0; i<cars.size()-1;i++){//this is the crashing mechanism
+					for(int j=i+1;j<cars.size();j++){
 						if(i!=j&&cars.get(i).intersects(cars.get(j))){
 							cars.get(i).crash();
 							cars.get(j).crash();
 						}
 					}
 				}
-				
-				for(int i=1;i<cars.size();i++){//this will decide how other cars move
-					
-					
-				}
 
+				if(t>=4)
+					for(int i=1;i<cars.size();i++){//this will decide how other cars move
+						Car temp = cars.get(i);
+						temp.accelerate(.002);
+						if(temp.getX()>0){
+
+						}
+
+					}
+				
 				for(Car c:cars){//this does all the cars
 					c.update(40);//pastNanoTime[0]-t is the change in time
 					c.render(gc);	
 				}
-
-				txt.setText(""+cars.get(0).getVelocity()+"\t"+cars.get(0).getAcceleration());
+				
+				txt.setText(""+cars.get(0).getX()+"\t"+cars.get(0).getY()+"\t");
 				pastNanoTime[0]=t;
 			}
 		}.start();

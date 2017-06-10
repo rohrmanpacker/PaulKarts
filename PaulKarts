@@ -43,7 +43,7 @@ public class PaulKarts extends Application{
 		root.getChildren().addAll(canvas,txt);
 		GraphicsContext gc = canvas.getGraphicsContext2D();//this is the background
 
-		
+
 
 		ArrayList<Car> cars = new ArrayList<Car>();//array of cars
 
@@ -85,8 +85,11 @@ public class PaulKarts extends Application{
 		primaryStage.setTitle("PAULKARTS");
 
 		ArrayList<Rectangle2D> borders=Border.getBorder(height, width);
-		ArrayList<Rectangle2D> turnLefts =Border.getTurnLeft(gc, height, width);
-		ArrayList<Rectangle2D> turnRights =Border.getTurnRight(gc, height, width);
+		ArrayList<Rectangle2D> goUps = Border.getUp(gc, height, width);
+		ArrayList<Rectangle2D> goLefts = Border.getLeft(gc, height, width);
+		ArrayList<Rectangle2D> goRights = Border.getRight(gc, height, width);
+		ArrayList<Rectangle2D> goDowns = Border.getDown(gc, height, width);
+
 
 		final long startNanoTime = System.nanoTime();//getting nanotime for animation uses
 		double[] pastNanoTime = new double[1];
@@ -98,9 +101,10 @@ public class PaulKarts extends Application{
 				gc.clearRect(0, 0, width, height);//clears the canvas
 				gc.strokeRect(0, 0, width, height);
 				//this is the border
+				Border.drawTurns(gc, height, width);
 				Border.drawBoundries(gc, height, width);
 				
-				
+
 				if(t>=0&&t<1){//this is the starting sequence
 					gc.fillText("START IN", 680, 200);
 				}
@@ -117,7 +121,7 @@ public class PaulKarts extends Application{
 					gc.fillText("GO!", 692, 200);
 				}
 
-				//controlls movement (and you cant go until after it says GO
+				//controls movement (and you can't go until after it says GO
 				if(t>=4&&input.contains("W")){
 					cars.get(0).accelerate(.002);
 				}
@@ -144,32 +148,63 @@ public class PaulKarts extends Application{
 							cars.get(j).crash();
 						}
 					}
-					
+
 				}
 
 				if(t>=4)
 					for(int i=1;i<cars.size();i++){//this will decide how other cars move
 						Car temp = cars.get(i);
 						temp.accelerate(.002);
-						for(Rectangle2D left:turnLefts){
-							if(left.contains(temp.getBoundary())){
+						double angle=temp.getAngle();
+						
+						for(Rectangle2D left:goLefts){//makes it turn left in those boxes
+							if(left.contains(temp.getBoundary())&&angle>190){
 								temp.rotate(-2);
 							}
+							if(left.contains(temp.getBoundary())&&angle<170){
+								temp.rotate(2);
+							}
 						}
-						for(Rectangle2D right:turnRights){
-							if(right.contains(temp.getBoundary())){
+						for(Rectangle2D up:goUps){//makes it turn up in those boxes 
+							if(up.contains(temp.getBoundary())&&(angle<90||angle>280)){
+								temp.rotate(-2);
+							}
+							if(up.contains(temp.getBoundary())&&angle>90&&angle<260){
+								temp.rotate(2);
+							}
+						}
+						for(Rectangle2D right:goRights){//makes it turn right in those boxes 
+							if(right.contains(temp.getBoundary())&&angle<180&&angle>10){
+								temp.rotate(-2);
+							}
+							if(right.contains(temp.getBoundary())&&angle>180&&angle<350){
+								temp.rotate(2);
+							}
+						}
+						for(Rectangle2D down:goDowns){//makes it turn down in those boxes 
+							if(down.contains(temp.getBoundary())&&angle<270&&angle>100){
+								temp.rotate(-2);
+							}
+							if(down.contains(temp.getBoundary())&&(angle<80||angle>270)){
 								temp.rotate(2);
 							}
 						}
 
+
 					}
-				
+
 				for(Car c:cars){//this does all the cars
+					if(c.getX()>width||c.getX()<-15||c.getY()>height||c.getY()<-15){//this is the reset thing
+						c.setPosition(defaultPositions[0][0], defaultPositions[0][1]);
+						c.setVelocity(0);
+						c.rotate(-c.getAngle());
+						c.rotate(270);
+					}
 					c.update(40);//pastNanoTime[0]-t is the change in time
 					c.render(gc);	
 				}
-				
-				txt.setText(""+cars.get(0).getX()+"\t"+cars.get(0).getY()+"\t");
+
+				txt.setText(""+cars.get(0).getX()+"\t"+cars.get(0).getY()+"\t"+cars.get(0).getAngle());
 				pastNanoTime[0]=t;
 			}
 		}.start();

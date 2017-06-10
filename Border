@@ -93,7 +93,7 @@ public class Border{
 		ArrayList<Rectangle2D> rects = new ArrayList<Rectangle2D>();
 		//TODO
 		rects.add(new Rectangle2D(.5*width,0,.25*width,.3*height));
-		rects.add(new Rectangle2D(0, 0, .2*width, .8*height));
+		rects.add(new Rectangle2D(0, 0, .22*width, .8*height));
 		rects.add(new Rectangle2D(.6*width,.6*height,.1*width,.1*height));
 		return rects;
 	}
@@ -107,7 +107,7 @@ public class Border{
 		ArrayList<Rectangle2D> rects = new ArrayList<Rectangle2D>();
 		rects.add(new Rectangle2D(.75*width,0,.25*width,.3*height));
 		rects.add(new Rectangle2D(.4*width,.3*height,.35*width,.2*height));
-		rects.add(new Rectangle2D(.1*width, 0, .3*width, .3*height));
+		rects.add(new Rectangle2D(.2*width, 0, .2*width, .3*height));
 		return rects;
 	}
 	public static void drawTurns(GraphicsContext gc,int height, int width){
@@ -119,11 +119,11 @@ public class Border{
 		gc.setFill(Color.BLUE);
 		gc.fillRect(.75*width,0,.25*width,.3*height);
 		gc.fillRect(.4*width,.3*height,.35*width,.2*height);
-		gc.fillRect(.1*width, 0, .3*width, .3*height);
+		gc.fillRect(.2*width, 0, .2*width, .3*height);
 		//down
 		gc.setFill(Color.ORANGE);
 		gc.fillRect(.5*width,0,.25*width,.3*height);
-		gc.fillRect(0, 0, .2*width, .8*height);
+		gc.fillRect(0, 0, .22*width, .8*height);
 		gc.fillRect(.6*width,.6*height,.1*width,.1*height);
 		//right
 		gc.setFill(Color.GREEN);

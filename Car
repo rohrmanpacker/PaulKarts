@@ -2,6 +2,7 @@ package paulkarts;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
 import javafx.scene.transform.Rotate;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.beans.property.ObjectProperty;
@@ -17,7 +18,7 @@ public class Car
 	private double width;
 	private double height;
 	private double acceleration;
-
+	private boolean crash;
 
 	public Car(double x, double y){
 		imageView =new ImageView();
@@ -27,6 +28,7 @@ public class Car
 		velocity = 0;
 		acceleration=0;
 		angle = 270;
+		crash=false;
 	}
 
 	public Car()
@@ -54,7 +56,7 @@ public class Car
 	public final ObjectProperty<Image> imageProperty(){
 		return imageView.imageProperty();
 	}
-	
+
 	public ImageView getImageView(){return imageView;}
 
 	public double getX(){
@@ -74,6 +76,8 @@ public class Car
 	}
 
 	public void rotate(double angleChange){
+		while(angleChange<0)
+			angleChange=(angleChange+360)%360;
 		angle+=angleChange+360;
 		angle%=360;
 		imageView.setRotate(angle);
@@ -97,7 +101,7 @@ public class Car
 	}
 	public void crash(){
 
-		angle+=180;
+		rotate(180);
 
 		if(velocity<0){
 			positionX -= Math.max(Math.abs(velocity),10)* Math.cos(Math.toRadians(angle));
@@ -110,7 +114,14 @@ public class Car
 		velocity=-velocity/10;
 	}
 	public void crash(double angle){
+		crash=true;
+	}
+	public void crashH(){
+		crash=true;
 		
+	}
+	public void crashV(){
+
 	}
 
 
@@ -118,45 +129,48 @@ public class Car
 
 	public void update(double time)//this is what gets run to update the position. vel, accel, etc.
 	{
+
 		imageView.setRotate(angle);
-		velocity += acceleration*time/10;
+		if(!crash){
+			velocity += acceleration*time/10;
 
-		if(velocity>.1){//sets max speed
-			velocity=.1;
-		}else if(velocity<-.1){
-			velocity =-.1;
+			if(velocity>.1){//sets max speed
+				velocity=.1;
+			}else if(velocity<-.1){
+				velocity =-.1;
+			}
+			if(acceleration>10){//sets max acceleration
+				acceleration=10;
+			}else if(acceleration<-10){
+				acceleration =-10;
+			}
+
+			positionX += velocity * time * Math.cos(Math.toRadians(angle));
+			positionY += velocity * time * Math.sin(Math.toRadians(angle));
+
+			if(velocity>0){//slowing down
+				velocity-=.001;
+			}else if(velocity<0){
+				velocity+=.001;
+			}
+
+			if(velocity<.001&&velocity>0||velocity>-.001&&velocity<0){//gets rid of rounding errors 
+				velocity=0;
+			}
+
+			acceleration=0;
+
 		}
-		if(acceleration>10){//sets max acceleration
-			acceleration=10;
-		}else if(acceleration<-10){
-			acceleration =-10;
-		}
-
-		positionX += velocity * time * Math.cos(Math.toRadians(angle));
-		positionY += velocity * time * Math.sin(Math.toRadians(angle));
-
-		if(velocity>0){//slowing down
-			velocity-=.001;
-		}else if(velocity<0){
-			velocity+=.001;
-		}
-
-		if(velocity<.001&&velocity>0||velocity>-.001&&velocity<0){//gets rid of rounding errors 
-			velocity=0;
-		}
-
-		acceleration=0;
-
-
 	}
 
 	public void render(GraphicsContext gc)
 	{
 		gc.save();
 		Rotate r = new Rotate(angle+90, positionX + imageView.getImage().getWidth() / 2, positionY + imageView.getImage().getWidth() / 2);
-        gc.setTransform(r.getMxx(), r.getMyx(), r.getMxy(), r.getMyy(), r.getTx(), r.getTy());
+		gc.setTransform(r.getMxx(), r.getMyx(), r.getMxy(), r.getMyy(), r.getTx(), r.getTy());
 		gc.drawImage( imageView.getImage(), positionX, positionY );
 		gc.restore();
+		
 	}
 
 	public Rectangle2D getBoundary()

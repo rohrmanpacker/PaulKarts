@@ -23,7 +23,7 @@ import javafx.stage.Stage;
 
 
 public class PaulKarts extends Application{
-	private double[][] defaultPositions = {{650,250},{700,275},{750,300},{650,325},{700,350},{750,375}};
+	private double[][] defaultPositions = {{650,250},{700,275},{750,300},{650,375},{700,400},{750,425}};
 	public static void main(String[] args){
 		Application.launch(args);
 	}

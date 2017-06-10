@@ -31,7 +31,6 @@ public class PaulKarts extends Application{
 
 	public void start(Stage primaryStage) throws Exception {
 		int width = 800, height = 600;
-		Integer test = 0;
 		primaryStage.setWidth(width+16);//idk why this works but it does
 		primaryStage.setHeight(height+39);
 
@@ -89,7 +88,7 @@ public class PaulKarts extends Application{
 		ArrayList<Rectangle2D> goLefts = Border.getLeft(gc, height, width);
 		ArrayList<Rectangle2D> goRights = Border.getRight(gc, height, width);
 		ArrayList<Rectangle2D> goDowns = Border.getDown(gc, height, width);
-
+		double changeAngle = 3;
 
 		final long startNanoTime = System.nanoTime();//getting nanotime for animation uses
 		double[] pastNanoTime = new double[1];
@@ -101,7 +100,7 @@ public class PaulKarts extends Application{
 				gc.clearRect(0, 0, width, height);//clears the canvas
 				gc.strokeRect(0, 0, width, height);
 				//this is the border
-				Border.drawTurns(gc, height, width);
+				//Border.drawTurns(gc, height, width);
 				Border.drawBoundries(gc, height, width);
 				
 
@@ -129,10 +128,10 @@ public class PaulKarts extends Application{
 					cars.get(0).accelerate(-.002);
 				}
 				if(t>=4&&input.contains("A")){
-					cars.get(0).rotate(-2);
+					cars.get(0).rotate(-changeAngle);
 				}
 				if(t>=4&&input.contains("D")){
-					cars.get(0).rotate(2);
+					cars.get(0).rotate(changeAngle);
 				}
 				for(int i =0;i<borders.size();i++){
 					for(Car c:cars)
@@ -157,36 +156,37 @@ public class PaulKarts extends Application{
 						temp.accelerate(.002);
 						double angle=temp.getAngle();
 						
+						
 						for(Rectangle2D left:goLefts){//makes it turn left in those boxes
-							if(left.contains(temp.getBoundary())&&angle>190){
-								temp.rotate(-2);
+							if(left.contains(temp.getBoundary())&&angle>185){
+								temp.rotate(-changeAngle);
 							}
-							if(left.contains(temp.getBoundary())&&angle<170){
-								temp.rotate(2);
+							if(left.contains(temp.getBoundary())&&angle<175){
+								temp.rotate(changeAngle);
 							}
 						}
 						for(Rectangle2D up:goUps){//makes it turn up in those boxes 
-							if(up.contains(temp.getBoundary())&&(angle<90||angle>280)){
-								temp.rotate(-2);
+							if(up.contains(temp.getBoundary())&&(angle<90||angle>275)){
+								temp.rotate(-changeAngle);
 							}
-							if(up.contains(temp.getBoundary())&&angle>90&&angle<260){
-								temp.rotate(2);
+							if(up.contains(temp.getBoundary())&&angle>90&&angle<265){
+								temp.rotate(changeAngle);
 							}
 						}
 						for(Rectangle2D right:goRights){//makes it turn right in those boxes 
-							if(right.contains(temp.getBoundary())&&angle<180&&angle>10){
-								temp.rotate(-2);
+							if(right.contains(temp.getBoundary())&&angle<180&&angle>5){
+								temp.rotate(-changeAngle);
 							}
-							if(right.contains(temp.getBoundary())&&angle>180&&angle<350){
-								temp.rotate(2);
+							if(right.contains(temp.getBoundary())&&angle>180&&angle<355){
+								temp.rotate(changeAngle);
 							}
 						}
 						for(Rectangle2D down:goDowns){//makes it turn down in those boxes 
-							if(down.contains(temp.getBoundary())&&angle<270&&angle>100){
-								temp.rotate(-2);
+							if(down.contains(temp.getBoundary())&&angle<270&&angle>95){
+								temp.rotate(-changeAngle);
 							}
-							if(down.contains(temp.getBoundary())&&(angle<80||angle>270)){
-								temp.rotate(2);
+							if(down.contains(temp.getBoundary())&&(angle<85||angle>270)){
+								temp.rotate(changeAngle);
 							}
 						}
 
@@ -204,7 +204,7 @@ public class PaulKarts extends Application{
 					c.render(gc);	
 				}
 
-				txt.setText(""+cars.get(0).getX()+"\t"+cars.get(0).getY()+"\t"+cars.get(0).getAngle());
+				//txt.setText(""+cars.get(1).getAngle()+"\t"+cars.get(2).getAngle()+"\t"+cars.get(3).getAngle()+"\t"+cars.get(4).getAngle());
 				pastNanoTime[0]=t;
 			}
 		}.start();

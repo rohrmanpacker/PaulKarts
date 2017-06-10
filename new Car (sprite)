@@ -74,7 +74,8 @@ public class Car
 	}
 
 	public void rotate(double angleChange){
-		angle+=angleChange;
+		angle+=angleChange+360;
+		angle%=360;
 		imageView.setRotate(angle);
 	}
 

@@ -102,7 +102,7 @@ public class PaulKarts extends Application{
 				//this is the border
 				//Border.drawTurns(gc, height, width);
 				Border.drawBoundries(gc, height, width);
-				
+
 
 				if(t>=0&&t<1){//this is the starting sequence
 					gc.fillText("START IN", 680, 200);
@@ -135,7 +135,7 @@ public class PaulKarts extends Application{
 				}
 				for(int i =0;i<borders.size();i++){
 					for(Car c:cars)
-						if(borders.get(i).contains(c.getBoundary())){
+						if(borders.get(i).intersects(c.getBoundary())){
 							c.crash();
 						}
 				}
@@ -155,8 +155,8 @@ public class PaulKarts extends Application{
 						Car temp = cars.get(i);
 						temp.accelerate(.002);
 						double angle=temp.getAngle();
-						
-						
+
+
 						for(Rectangle2D left:goLefts){//makes it turn left in those boxes
 							if(left.contains(temp.getBoundary())&&angle>185){
 								temp.rotate(-changeAngle);

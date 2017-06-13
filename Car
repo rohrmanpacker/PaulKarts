@@ -19,6 +19,8 @@ public class Car
 	private double height;
 	private double acceleration;
 	private boolean crash;
+	private int currentLap;
+	private boolean canLap;
 
 	public Car(double x, double y){
 		imageView =new ImageView();
@@ -29,6 +31,8 @@ public class Car
 		acceleration=0;
 		angle = 270;
 		crash=false;
+		currentLap=1;
+		canLap=true;
 	}
 
 	public Car()
@@ -53,6 +57,7 @@ public class Car
 	public Image getImage(){
 		return imageView.getImage();
 	}
+	
 	public final ObjectProperty<Image> imageProperty(){
 		return imageView.imageProperty();
 	}
@@ -68,7 +73,23 @@ public class Car
 	public double getAcceleration(){return acceleration;}
 	public double getVelocity(){return velocity;}
 	public double getAngle(){return angle;}
-
+	public int getLapsCompleted(){return currentLap-1;}
+	public boolean canLap(){return canLap;}
+	public int lapsToAdd(){
+		if(logicalXOR(velocity>0,angle>180)){
+			return -1;
+		}
+		return 1;
+	}
+	
+	public void addLaps(int laps){
+		this.currentLap+=laps;
+	}
+	
+	public void setCanLap(boolean canLap){
+		this.canLap=canLap;
+	}
+	
 	public void setPosition(double x, double y)
 	{
 		positionX = x;
@@ -181,6 +202,9 @@ public class Car
 	public boolean intersects(Car s)
 	{
 		return s.getBoundary().intersects( this.getBoundary() );
+	}
+	public static boolean logicalXOR(boolean x, boolean y) {
+	    return ( ( x || y ) && ! ( x && y ) );
 	}
 
 	public String toString()

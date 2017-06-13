@@ -30,12 +30,12 @@ public class PaulKarts extends Application{
 
 
 	public void start(Stage primaryStage) throws Exception {
-		int width = 800, height = 600;
+		int width = 800, height = 600, lapsToWin=0;
 		primaryStage.setWidth(width+16);//idk why this works but it does
 		primaryStage.setHeight(height+39);
 
 		Text txt=new Text();
-
+		
 
 		VBox root = new VBox();
 		Canvas canvas = new Canvas(width,height);//background
@@ -55,7 +55,7 @@ public class PaulKarts extends Application{
 		for(Car c:cars)
 			c.setImage("car1.png");
 
-
+		cars.get(0).setImage("car2.png");
 
 		Scene scene = new Scene(root,width,height);
 
@@ -88,6 +88,7 @@ public class PaulKarts extends Application{
 		ArrayList<Rectangle2D> goLefts = Border.getLeft(gc, height, width);
 		ArrayList<Rectangle2D> goRights = Border.getRight(gc, height, width);
 		ArrayList<Rectangle2D> goDowns = Border.getDown(gc, height, width);
+		ArrayList<Rectangle2D> startingLines = Border.getStartingLine(height, width);
 		double changeAngle = 3;
 
 		final long startNanoTime = System.nanoTime();//getting nanotime for animation uses
@@ -96,13 +97,16 @@ public class PaulKarts extends Application{
 		{
 			public void handle(long currentNanoTime)
 			{
+				boolean win = false;
+				boolean lose=false;
 				double t = (currentNanoTime - startNanoTime) / 1000000000.0; //t is the total change in time since the start in seconds
 				gc.clearRect(0, 0, width, height);//clears the canvas
 				gc.strokeRect(0, 0, width, height);
 				//this is the border
 				//Border.drawTurns(gc, height, width);
 				Border.drawBoundries(gc, height, width);
-
+				Border.drawStartingLine(gc, height, width);
+				
 
 				if(t>=0&&t<1){//this is the starting sequence
 					gc.fillText("START IN", 680, 200);
@@ -119,19 +123,39 @@ public class PaulKarts extends Application{
 				if(t>=4&&t<6){
 					gc.fillText("GO!", 692, 200);
 				}
-
-				//controls movement (and you can't go until after it says GO
-				if(t>=4&&input.contains("W")){
-					cars.get(0).accelerate(.002);
+				for(int i=1;i<cars.size();i++){
+					if(cars.get(i).getLapsCompleted()>=lapsToWin)
+						lose=true;
 				}
-				if(t>=4&&input.contains("S")){
-					cars.get(0).accelerate(-.002);
+				if(cars.get(0).getLapsCompleted()>=lapsToWin)
+					win=true;
+				if(win)
+					gc.drawImage(new Image("victory.png"), 100, 200);
+				else if(lose)
+					gc.drawImage(new Image("defeat.png"), 100, 170);
+				
+				if(win||lose){
+					gc.fillText("PRESS SPACE TO REPLAY", 620, 230);
+					if(input.contains("SPACE")){
+						String[] args = {};
+						//PaulKarts.main(args); this doesn't work
+						input.remove("SPACE");
+					}
 				}
-				if(t>=4&&input.contains("A")){
-					cars.get(0).rotate(-changeAngle);
-				}
-				if(t>=4&&input.contains("D")){
-					cars.get(0).rotate(changeAngle);
+				//controls movement (and you can't go until after it says GO and if you the game is over
+				if(t>=4&&!(win||lose)){
+					if(input.contains("W")){
+						cars.get(0).accelerate(.002);
+					}
+					if(input.contains("S")){
+						cars.get(0).accelerate(-.002);
+					}
+					if(input.contains("A")){
+						cars.get(0).rotate(-changeAngle);
+					}
+					if(input.contains("D")){
+						cars.get(0).rotate(changeAngle);
+					}
 				}
 				for(int i =0;i<borders.size();i++){
 					for(Car c:cars)
@@ -139,6 +163,7 @@ public class PaulKarts extends Application{
 							c.crash();
 						}
 				}
+
 
 				for(int i = 0; i<cars.size()-1;i++){//this is the crashing mechanism
 					for(int j=i+1;j<cars.size();j++){
@@ -150,7 +175,7 @@ public class PaulKarts extends Application{
 
 				}
 
-				if(t>=4)
+				if(t>=4&&!(win||lose))
 					for(int i=1;i<cars.size();i++){//this will decide how other cars move
 						Car temp = cars.get(i);
 						temp.accelerate(.002);
@@ -189,11 +214,17 @@ public class PaulKarts extends Application{
 								temp.rotate(changeAngle);
 							}
 						}
-
-
+						
 					}
 
 				for(Car c:cars){//this does all the cars
+					if(startingLines.get(0).intersects(c.getBoundary())&&c.canLap()){
+						c.setCanLap(false);
+						c.addLaps(c.lapsToAdd());
+					}
+					if(!startingLines.get(0).intersects(c.getBoundary())&&!startingLines.get(1).intersects(c.getBoundary())){
+						c.setCanLap(true);
+					}
 					if(c.getX()>width||c.getX()<-15||c.getY()>height||c.getY()<-15){//this is the reset thing
 						c.setPosition(defaultPositions[0][0], defaultPositions[0][1]);
 						c.setVelocity(0);
@@ -204,7 +235,7 @@ public class PaulKarts extends Application{
 					c.render(gc);	
 				}
 
-				//txt.setText(""+cars.get(1).getAngle()+"\t"+cars.get(2).getAngle()+"\t"+cars.get(3).getAngle()+"\t"+cars.get(4).getAngle());
+				txt.setText(""+cars.get(0).getLapsCompleted());
 				pastNanoTime[0]=t;
 			}
 		}.start();

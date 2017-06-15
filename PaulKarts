@@ -23,14 +23,14 @@ import javafx.stage.Stage;
 
 
 public class PaulKarts extends Application{
-	private double[][] defaultPositions = {{650,250},{700,275},{750,300},{650,375},{700,400},{750,425}};
+	private double[][] defaultPositions = {{650,250},{700,275},{750,300},{625,375},{675,400},{725,425}};
 	public static void main(String[] args){
 		Application.launch(args);
 	}
 
 
 	public void start(Stage primaryStage) throws Exception {
-		int width = 800, height = 600, lapsToWin=0;
+		int width = 800, height = 600, lapsToWin=5;
 		primaryStage.setWidth(width+16);//idk why this works but it does
 		primaryStage.setHeight(height+39);
 
@@ -160,7 +160,7 @@ public class PaulKarts extends Application{
 				for(int i =0;i<borders.size();i++){
 					for(Car c:cars)
 						if(borders.get(i).intersects(c.getBoundary())){
-							c.crash();
+							c.crashWall();
 						}
 				}
 
@@ -168,8 +168,8 @@ public class PaulKarts extends Application{
 				for(int i = 0; i<cars.size()-1;i++){//this is the crashing mechanism
 					for(int j=i+1;j<cars.size();j++){
 						if(i!=j&&cars.get(i).intersects(cars.get(j))){
-							cars.get(i).crash();
-							cars.get(j).crash();
+							cars.get(i).crash(cars.get(j));
+							cars.get(j).crash(cars.get(i));
 						}
 					}
 

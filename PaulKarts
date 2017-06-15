@@ -1,246 +1,147 @@
 package paulkarts;
 
-
 import java.util.ArrayList;
-
-import javafx.animation.AnimationTimer;
-import javafx.application.*;
-import javafx.event.EventHandler;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.scene.SnapshotParameters;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-import javafx.scene.text.Text;
-import javafx.stage.Stage;
+
+public class Border{
+	private int width, height;
+
+	public Border(int height, int width){
+		this.height=height;
+		this.width=width;
+	}
+
+	public Border(){
+		this(600,800);
+	}
+
+	public ArrayList<Rectangle2D> getBorder(){
+		ArrayList<Rectangle2D> borders = new ArrayList<Rectangle2D>();
 
 
-public class PaulKarts extends Application{
-	private double[][] defaultPositions = {{650,250},{700,275},{750,300},{625,375},{675,400},{725,425}};
-	public static void main(String[] args){
-		Application.launch(args);
+		return borders;
+	}
+
+	public static ArrayList<Rectangle2D> getBorder(int height, int width){
+		ArrayList<Rectangle2D> borders = new ArrayList<Rectangle2D>();
+		borders.add(new Rectangle2D(-20,-20,width+20,25));//top 
+		//borders.add(new Rectangle2D(0,0,width,5))
+		borders.add(new Rectangle2D(-20,-20,25,height+20));//left
+		//borders.add(new Rectangle2D(0,0,5,height));
+		borders.add(new Rectangle2D(width-5,0,width,height));//right
+		borders.add(new Rectangle2D(0,height-5,width,height));//bottom
+		borders.add(new Rectangle2D(.4*width,0,.1*width,.3*height)); //top box
+		borders.add(new Rectangle2D(.7*width, .3*height, .07*width, .45*height)); //right box
+		borders.add(new Rectangle2D(.2*width,.5*height,.5*width,.1*height)); //middle box
+		borders.add(new Rectangle2D(.15*width, .3*height, .07*width, .45*height)); //left box
+
+
+		return borders;
+	}
+	public static void drawBoundries(GraphicsContext gc,int height,int width){
+		gc.setFill(Color.BLACK);
+		gc.setStroke(Color.BLACK);
+		gc.fillRect(0,0,width,5);
+		gc.fillRect(0,0,5,height);
+		gc.fillRect(width-5,0,width,height);
+		gc.fillRect(0,height-5,width,height);
+		gc.fillRect(.4*width,0,.1*width,.3*height);
+		gc.fillRect(.7*width, .3*height, .07*width, .45*height);
+		gc.fillRect(.2*width,.5*height,.5*width,.1*height);
+		gc.fillRect(.15*width, .3*height, .07*width, .45*height);
+
+	}
+
+	public static ArrayList<Rectangle2D> getTurnLeft(GraphicsContext gc,int height, int width){//Rectangle2D(double minX, double minY, double width, double height)
+		ArrayList<Rectangle2D> rects = new ArrayList<Rectangle2D>();
+		rects.add(new Rectangle2D(0,0,width,height*.3));
+		rects.add(new Rectangle2D(0,height*.75,width*.225,height*.25));
+		rects.add(new Rectangle2D(width*.75,height*.75,width*.25,height*.25));
+
+
+		gc.setFill(Color.GREEN);
+		gc.fillRect(0,0,width*.4,height*.3);
+		gc.fillRect(0,600 - height*.3,width*.4,height*.3);
+		gc.setFill(Color.BLACK);
+		return rects;
+
 	}
 
 
-	public void start(Stage primaryStage) throws Exception {
-		int width = 800, height = 600, lapsToWin=5;
-		primaryStage.setWidth(width+16);//idk why this works but it does
-		primaryStage.setHeight(height+39);
-
-		Text txt=new Text();
+	public static ArrayList<Rectangle2D> getTurnRight(GraphicsContext gc,int height, int width){//Rectangle2D(double minX, double minY, double width, double height)
+		ArrayList<Rectangle2D> rects = new ArrayList<Rectangle2D>();
+		rects.add(new Rectangle2D(.4*width+.1*width,.2*height,.7*width-.4*width,.6*height-height*.3));
+		rects.add(new Rectangle2D(.15*width+.07*width,.3*height,.5*width-(.15*width + .07*width),.5*height-height*.3));
 		
-
-		VBox root = new VBox();
-		Canvas canvas = new Canvas(width,height);//background
-		root.getChildren().addAll(canvas,txt);
-		GraphicsContext gc = canvas.getGraphicsContext2D();//this is the background
-
-
-
-		ArrayList<Car> cars = new ArrayList<Car>();//array of cars
-
-		for(int i = 0;i<defaultPositions.length;i++){//makes all the cars that there are default positions for
-			cars.add(new Car(defaultPositions[i][0],defaultPositions[i][1]));//makes the cars
-
-		}
-
-		root.getChildren().add(cars.get(0).getImageView());
-		for(Car c:cars)
-			c.setImage("car1.png");
-
-		cars.get(0).setImage("car2.png");
-
-		Scene scene = new Scene(root,width,height);
-
-		ArrayList<String> input = new ArrayList<String>();
-		scene.setOnKeyPressed(
-				new EventHandler<KeyEvent>(){
-					public void handle(KeyEvent e){
-						String code = e.getCode().toString();
-						if(!input.contains(code)){
-							input.add(code);
-						}
-					}
-				}
-				);//this makes the input array have the inputs in String form so we can use them later
-
-		scene.setOnKeyReleased(
-				new EventHandler<KeyEvent>(){
-					public void handle(KeyEvent e){
-						String code = e.getCode().toString();
-						input.remove(code);
-					}
-				}
-				);//this takes the code out of input if it is no longer being pressed
-
-		primaryStage.setScene(scene);
-		primaryStage.setTitle("PAULKARTS");
-
-		ArrayList<Rectangle2D> borders=Border.getBorder(height, width);
-		ArrayList<Rectangle2D> goUps = Border.getUp(gc, height, width);
-		ArrayList<Rectangle2D> goLefts = Border.getLeft(gc, height, width);
-		ArrayList<Rectangle2D> goRights = Border.getRight(gc, height, width);
-		ArrayList<Rectangle2D> goDowns = Border.getDown(gc, height, width);
-		ArrayList<Rectangle2D> startingLines = Border.getStartingLine(height, width);
-		double changeAngle = 3;
-
-		final long startNanoTime = System.nanoTime();//getting nanotime for animation uses
-		double[] pastNanoTime = new double[1];
-		new AnimationTimer()//this is like the game timer
-		{
-			public void handle(long currentNanoTime)
-			{
-				boolean win = false;
-				boolean lose=false;
-				double t = (currentNanoTime - startNanoTime) / 1000000000.0; //t is the total change in time since the start in seconds
-				gc.clearRect(0, 0, width, height);//clears the canvas
-				gc.strokeRect(0, 0, width, height);
-				//this is the border
-				//Border.drawTurns(gc, height, width);
-				Border.drawBoundries(gc, height, width);
-				Border.drawStartingLine(gc, height, width);
-				
-
-				if(t>=0&&t<1){//this is the starting sequence
-					gc.fillText("START IN", 680, 200);
-				}
-				if(t>=1&&t<2){
-					gc.fillText("3", 700, 200);
-				}
-				if(t>=2&&t<3){
-					gc.fillText("2", 700, 200);
-				}
-				if(t>=3&&t<4){
-					gc.fillText("1", 700, 200);
-				}
-				if(t>=4&&t<6){
-					gc.fillText("GO!", 692, 200);
-				}
-				for(int i=1;i<cars.size();i++){
-					if(cars.get(i).getLapsCompleted()>=lapsToWin)
-						lose=true;
-				}
-				if(cars.get(0).getLapsCompleted()>=lapsToWin)
-					win=true;
-				if(win)
-					gc.drawImage(new Image("victory.png"), 100, 200);
-				else if(lose)
-					gc.drawImage(new Image("defeat.png"), 100, 170);
-				
-				if(win||lose){
-					gc.fillText("PRESS SPACE TO REPLAY", 620, 230);
-					if(input.contains("SPACE")){
-						String[] args = {};
-						//PaulKarts.main(args); this doesn't work
-						input.remove("SPACE");
-					}
-				}
-				//controls movement (and you can't go until after it says GO and if you the game is over
-				if(t>=4&&!(win||lose)){
-					if(input.contains("W")){
-						cars.get(0).accelerate(.002);
-					}
-					if(input.contains("S")){
-						cars.get(0).accelerate(-.002);
-					}
-					if(input.contains("A")){
-						cars.get(0).rotate(-changeAngle);
-					}
-					if(input.contains("D")){
-						cars.get(0).rotate(changeAngle);
-					}
-				}
-				for(int i =0;i<borders.size();i++){
-					for(Car c:cars)
-						if(borders.get(i).intersects(c.getBoundary())){
-							c.crashWall();
-						}
-				}
-
-
-				for(int i = 0; i<cars.size()-1;i++){//this is the crashing mechanism
-					for(int j=i+1;j<cars.size();j++){
-						if(i!=j&&cars.get(i).intersects(cars.get(j))){
-							cars.get(i).crash(cars.get(j));
-							cars.get(j).crash(cars.get(i));
-						}
-					}
-
-				}
-
-				if(t>=4&&!(win||lose))
-					for(int i=1;i<cars.size();i++){//this will decide how other cars move
-						Car temp = cars.get(i);
-						temp.accelerate(.002);
-						double angle=temp.getAngle();
-
-
-						for(Rectangle2D left:goLefts){//makes it turn left in those boxes
-							if(left.contains(temp.getBoundary())&&angle>185){
-								temp.rotate(-changeAngle);
-							}
-							if(left.contains(temp.getBoundary())&&angle<175){
-								temp.rotate(changeAngle);
-							}
-						}
-						for(Rectangle2D up:goUps){//makes it turn up in those boxes 
-							if(up.contains(temp.getBoundary())&&(angle<90||angle>275)){
-								temp.rotate(-changeAngle);
-							}
-							if(up.contains(temp.getBoundary())&&angle>90&&angle<265){
-								temp.rotate(changeAngle);
-							}
-						}
-						for(Rectangle2D right:goRights){//makes it turn right in those boxes 
-							if(right.contains(temp.getBoundary())&&angle<180&&angle>5){
-								temp.rotate(-changeAngle);
-							}
-							if(right.contains(temp.getBoundary())&&angle>180&&angle<355){
-								temp.rotate(changeAngle);
-							}
-						}
-						for(Rectangle2D down:goDowns){//makes it turn down in those boxes 
-							if(down.contains(temp.getBoundary())&&angle<270&&angle>95){
-								temp.rotate(-changeAngle);
-							}
-							if(down.contains(temp.getBoundary())&&(angle<85||angle>270)){
-								temp.rotate(changeAngle);
-							}
-						}
-						
-					}
-
-				for(Car c:cars){//this does all the cars
-					if(startingLines.get(0).intersects(c.getBoundary())&&c.canLap()){
-						c.setCanLap(false);
-						c.addLaps(c.lapsToAdd());
-					}
-					if(!startingLines.get(0).intersects(c.getBoundary())&&!startingLines.get(1).intersects(c.getBoundary())){
-						c.setCanLap(true);
-					}
-					if(c.getX()>width||c.getX()<-15||c.getY()>height||c.getY()<-15){//this is the reset thing
-						c.setPosition(defaultPositions[0][0], defaultPositions[0][1]);
-						c.setVelocity(0);
-						c.rotate(-c.getAngle());
-						c.rotate(270);
-					}
-					c.update(40);//pastNanoTime[0]-t is the change in time
-					c.render(gc);	
-				}
-
-				txt.setText(""+cars.get(0).getLapsCompleted());
-				pastNanoTime[0]=t;
-			}
-		}.start();
-
-		primaryStage.show();
+		gc.setFill(Color.RED);
+		gc.fillRect(.4*width+.1*width,.3*height,.7*width-.4*width,.5*height-height*.3);
+		gc.fillRect(.15*width+.07*width,.3*height,.4*width-(.15*width + .07*width),.5*height-height*.3);
+		gc.setFill(Color.BLACK);
+		return rects;
 	}
-
+	
+	public static ArrayList<Rectangle2D> getUp(GraphicsContext gc,int height, int width){//Rectangle2D(double minX, double minY, double width, double height)
+		ArrayList<Rectangle2D> rects = new ArrayList<Rectangle2D>();
+		//TODO
+		rects.add(new Rectangle2D(.2*width, .3*height, .2*width, .2*height));
+		rects.add(new Rectangle2D(.7*width, .3*height, .3*width, .7*height));
+		return rects;
+	}
+	public static ArrayList<Rectangle2D> getDown(GraphicsContext gc,int height, int width){//Rectangle2D(double minX, double minY, double width, double height)
+		ArrayList<Rectangle2D> rects = new ArrayList<Rectangle2D>();
+		//TODO
+		rects.add(new Rectangle2D(.5*width,0,.25*width,.3*height));
+		rects.add(new Rectangle2D(0, 0, .22*width, .8*height));
+		rects.add(new Rectangle2D(.6*width,.6*height,.1*width,.1*height));
+		return rects;
+	}
+	public static ArrayList<Rectangle2D> getRight(GraphicsContext gc,int height, int width){//Rectangle2D(double minX, double minY, double width, double height)
+		ArrayList<Rectangle2D> rects = new ArrayList<Rectangle2D>();
+		rects.add(new Rectangle2D(-20,.7*height,.7*width+20,.3*height));
+		rects.add(new Rectangle2D(.2*width, .6*height, .4*width, .1*height));
+		return rects;
+	}
+	public static ArrayList<Rectangle2D> getLeft(GraphicsContext gc,int height, int width){//Rectangle2D(double minX, double minY, double width, double height)
+		ArrayList<Rectangle2D> rects = new ArrayList<Rectangle2D>();
+		rects.add(new Rectangle2D(.75*width,0,.25*width,.3*height));
+		rects.add(new Rectangle2D(.4*width,.3*height,.35*width,.2*height));
+		rects.add(new Rectangle2D(.2*width, 0, .2*width, .3*height));
+		return rects;
+	}
+	public static void drawTurns(GraphicsContext gc,int height, int width){
+		//up
+		gc.setFill(Color.RED);
+		gc.fillRect(.2*width, .3*height, .2*width, .2*height);
+		gc.fillRect(.7*width, .3*height, .3*width, .7*height);
+		//left
+		gc.setFill(Color.BLUE);
+		gc.fillRect(.75*width,0,.25*width,.3*height);
+		gc.fillRect(.4*width,.3*height,.35*width,.2*height);
+		gc.fillRect(.2*width, 0, .2*width, .3*height);
+		//down
+		gc.setFill(Color.ORANGE);
+		gc.fillRect(.5*width,0,.25*width,.3*height);
+		gc.fillRect(0, 0, .22*width, .8*height);
+		gc.fillRect(.6*width,.6*height,.1*width,.1*height);
+		//right
+		gc.setFill(Color.GREEN);
+		gc.fillRect(-20,.7*height,.7*width+20,.3*height);
+		gc.fillRect(.2*width, .6*height, .4*width, .1*height);
+		gc.setFill(Color.BLACK);
+	}
+	
+	public static void drawStartingLine(GraphicsContext gc, int height, int width){
+		gc.setFill(Color.BLACK);
+		gc.fillRect(.7*width, .4*height, .3* width, 1);
+		gc.fillRect(.7*width, .4*height-2, .3* width, 1);
+	}
+	
+	public static ArrayList<Rectangle2D> getStartingLine(int height, int width){
+		ArrayList<Rectangle2D> rects = new ArrayList<Rectangle2D>();
+		rects.add(new Rectangle2D(.7*width, .4*height, .3* width, 1));
+		rects.add(new Rectangle2D(.7*width, .4*height-2, .3* width, 1));
+		return rects;
+	}
 }

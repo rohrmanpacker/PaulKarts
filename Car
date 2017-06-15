@@ -122,28 +122,38 @@ public class Car
 	}
 	public void crash(){
 
-		rotate(180);
 
 		if(velocity<0){
-			positionX -= Math.max(Math.abs(velocity),10)* Math.cos(Math.toRadians(angle));
-			positionY -= Math.max(Math.abs(velocity),10) * Math.sin(Math.toRadians(angle));
+			positionX += 10*Math.cos(Math.toRadians(angle));
+			positionY += 10* Math.sin(Math.toRadians(angle));
 		}else{
-			positionX += Math.max(Math.abs(velocity),10)* Math.cos(Math.toRadians(angle));
-			positionY += Math.max(Math.abs(velocity),10) * Math.sin(Math.toRadians(angle));
+			positionX -= 10* Math.cos(Math.toRadians(angle));
+			positionY -= 10* Math.sin(Math.toRadians(angle));
 		}
 		acceleration/=2;
-		velocity=-velocity/10;
+		velocity=-velocity;
 	}
-	public void crash(double angle){
-		crash=true;
-	}
-	public void crashH(){
-		crash=true;
+	public void crash(Car other){
+		double angleToAdjust= Math.atan((other.positionY-positionY)/(positionX-other.positionX));
+		if(other.positionX>positionX)
+			angleToAdjust*=-1;
+		positionX += 5*Math.cos(angleToAdjust);
+		positionY -= 5* Math.sin(angleToAdjust);
 		
 	}
-	public void crashV(){
-
+	public void crashWall(){
+		if(velocity<0){
+			positionX += Math.cos(Math.toRadians(angle));
+			positionY +=  Math.sin(Math.toRadians(angle));
+		}else{
+			positionX -=  Math.cos(Math.toRadians(angle));
+			positionY -=  Math.sin(Math.toRadians(angle));
+		}
+		acceleration/=2;
+		velocity=-velocity;
+		
 	}
+	
 
 
 

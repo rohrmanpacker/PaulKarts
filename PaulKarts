@@ -30,7 +30,7 @@ public class PaulKarts extends Application{
 
 
 	public void start(Stage primaryStage) throws Exception {
-		int width = 800, height = 600, lapsToWin=5;
+		int width = 800, height = 600, lapsToWin=3;
 		primaryStage.setWidth(width+16);//idk why this works but it does
 		primaryStage.setHeight(height+39);
 
@@ -138,9 +138,15 @@ public class PaulKarts extends Application{
 				if(win||lose){
 					gc.fillText("PRESS SPACE TO REPLAY", 620, 230);
 					if(input.contains("SPACE")){
-						String[] args = {};
-						//PaulKarts.main(args); this doesn't work
 						input.remove("SPACE");
+						primaryStage.close();
+						try {
+							new PaulKarts().start(new Stage());
+						} catch (Exception e) {
+							
+							e.printStackTrace();
+						}// this doesn't work
+						
 					}
 					for(Car c: cars)
 						c.setCanLap(false);

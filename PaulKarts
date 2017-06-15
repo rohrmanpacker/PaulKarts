@@ -30,7 +30,7 @@ public class PaulKarts extends Application{
 
 
 	public void start(Stage primaryStage) throws Exception {
-		int width = 800, height = 600, lapsToWin=3;
+		int width = 800, height = 600, lapsToWin=5;
 		primaryStage.setWidth(width+16);//idk why this works but it does
 		primaryStage.setHeight(height+39);
 

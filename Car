@@ -31,7 +31,7 @@ public class Car
 		acceleration=0;
 		angle = 270;
 		crash=false;
-		currentLap=1;
+		currentLap=0;
 		canLap=true;
 	}
 

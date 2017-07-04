@@ -18,19 +18,25 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 
 public class PaulKarts extends Application{
-	private double[][] defaultPositions = {{650,250},{700,275},{750,300},{625,375},{675,400},{725,425}};
+
+	private int startingX =650, startingY=250;
+	private double[][] defaultPositions = {{startingX,startingY},{startingX+50,startingY+25},{startingX+100,startingY+50},
+			{startingX,startingY+75},{startingX+50,startingY+100},{startingX+100,startingY+125},
+			{startingX,startingY+150},{startingX+50,startingY+175},{startingX+100,startingY+200}};
+
 	public static void main(String[] args){
 		Application.launch(args);
 	}
 
 
 	public void start(Stage primaryStage) throws Exception {
-		int width = 800, height = 600, lapsToWin=5;
+		int width = 800, height = 600, lapsToWin=1;
 		primaryStage.setWidth(width+16);//idk why this works but it does
 		primaryStage.setHeight(height+39);
 
@@ -50,12 +56,14 @@ public class PaulKarts extends Application{
 			cars.add(new Car(defaultPositions[i][0],defaultPositions[i][1]));//makes the cars
 
 		}
+		Car myCar=cars.get(4);
 
-		root.getChildren().add(cars.get(0).getImageView());
+		root.getChildren().add(myCar.getImageView());
 		for(Car c:cars)
 			c.setImage("car1.png");
 
-		cars.get(0).setImage("car2.png");
+
+		myCar.setImage("car2.png");
 
 		Scene scene = new Scene(root,width,height);
 
@@ -89,6 +97,8 @@ public class PaulKarts extends Application{
 		ArrayList<Rectangle2D> goRights = Border.getRight(gc, height, width);
 		ArrayList<Rectangle2D> goDowns = Border.getDown(gc, height, width);
 		ArrayList<Rectangle2D> startingLines = Border.getStartingLine(height, width);
+		ArrayList<Rectangle2D> boostArea = Border.getBoost(height, width);
+		ArrayList<Car> haveWon = new ArrayList<Car>();
 		double changeAngle = 3;
 
 		final long startNanoTime = System.nanoTime();//getting nanotime for animation uses
@@ -106,6 +116,7 @@ public class PaulKarts extends Application{
 				//Border.drawTurns(gc, height, width);
 				Border.drawBoundries(gc, height, width);
 				Border.drawStartingLine(gc, height, width);
+				//Border.drawBoost(gc, height, width);
 
 
 				if(t>=0&&t<1){//this is the starting sequence
@@ -123,48 +134,75 @@ public class PaulKarts extends Application{
 				if(t>=4&&t<6){
 					gc.fillText("GO!", 692, 200);
 				}
-				for(int i=1;i<cars.size();i++){
-					if(cars.get(i).getLapsCompleted()>=lapsToWin)
+				if(t>=4){
+					gc.save();
+					gc.setFill(Color.WHITE);
+					gc.setFont(new Font(32));
+					gc.fillText("Laps remaining: "+(lapsToWin-myCar.getLapsCompleted()), width*.3, height*.57);
+					gc.restore();
+				}
+				for(Car c:cars){
+					if(c.getLapsCompleted()>=lapsToWin&&!haveWon.contains(c))//if the car is done and not already in
+						haveWon.add(c);
+				}
+				for(int i =0; i<haveWon.size();i++){
+					if(haveWon.get(i)==myCar){
+						
+					}
+				}
+				/*for(Car c:cars){
+					if(c.getLapsCompleted()>=lapsToWin&&c!=myCar)
 						lose=true;
 				}
-				if(cars.get(0).getLapsCompleted()>=lapsToWin)
+				if(myCar.getLapsCompleted()>=lapsToWin)
 					win=true;
-				if(win)
-					gc.drawImage(new Image("victory.png"), 100, 200);
+				if(win){
+					gc.save();
+					gc.setFill(Color.GREEN);
+					gc.fillText("VICTORY", myCar.getX()-14, myCar.getY()-5);
+					gc.restore();
+				}
 				if(lose){
-					gc.drawImage(new Image("defeat.png"), 100, 170);
+					gc.save();
+					gc.setFill(Color.RED);
+					gc.fillText("DEFEAT", myCar.getX()-8, myCar.getY()-5);
+					gc.restore();
 
 				}
 				if(win||lose){
-					gc.fillText("PRESS SPACE TO REPLAY", 620, 230);
+					gc.fillText("PRESS SPACE TO REPLAY", myCar.getX()-50, myCar.getY()+27);
 					if(input.contains("SPACE")){
 						input.remove("SPACE");
 						primaryStage.close();
 						try {
 							new PaulKarts().start(new Stage());
 						} catch (Exception e) {
-							
+
 							e.printStackTrace();
-						}// this doesn't work
-						
+						}
+
 					}
 					for(Car c: cars)
 						c.setCanLap(false);
-				}
+				}*/
+				
 				//controls movement (and you can't go until after it says GO and if you the game is over
-				if(t>=4&&!(win||lose)){
+				if(myCar.canMove()){
 					if(input.contains("W")){
-						cars.get(0).accelerate(.002);
+						myCar.accelerate(.002);
 					}
 					if(input.contains("S")){
-						cars.get(0).accelerate(-.002);
+						myCar.accelerate(-.002);
 					}
 					if(input.contains("A")){
-						cars.get(0).rotate(-changeAngle);
+						myCar.rotate(-changeAngle);
 					}
 					if(input.contains("D")){
-						cars.get(0).rotate(changeAngle);
+						myCar.rotate(changeAngle);
 					}
+				}
+				if(input.contains("ESCAPE")){
+					primaryStage.close();
 				}
 				for(int i =0;i<borders.size();i++){
 					for(Car c:cars)
@@ -172,7 +210,6 @@ public class PaulKarts extends Application{
 							c.crashWall();
 						}
 				}
-
 
 				for(int i = 0; i<cars.size()-1;i++){//this is the crashing mechanism
 					for(int j=i+1;j<cars.size();j++){
@@ -183,50 +220,61 @@ public class PaulKarts extends Application{
 					}
 
 				}
-
+				//myCar.setMaxVelocity(.075);
 				if(t>=4&&!(win||lose))
-					for(int i=1;i<cars.size();i++){//this will decide how other cars move
-						Car temp = cars.get(i);
-						temp.accelerate(.002);
-						double angle=temp.getAngle();
+					for(Car c:cars){//this will decide how other cars move
+						if(c!=myCar){
+							c.accelerate(.002);
+
+							double angle=c.getAngle();
 
 
-						for(Rectangle2D left:goLefts){//makes it turn left in those boxes
-							if(left.contains(temp.getBoundary())&&angle>185){
-								temp.rotate(-changeAngle);
+							for(Rectangle2D left:goLefts){//makes it turn left in those boxes
+								if(left.contains(c.getBoundary())&&angle>185){
+									c.rotate(-changeAngle);
+								}
+								if(left.contains(c.getBoundary())&&angle<175){
+									c.rotate(changeAngle);
+								}
 							}
-							if(left.contains(temp.getBoundary())&&angle<175){
-								temp.rotate(changeAngle);
+							for(Rectangle2D up:goUps){//makes it turn up in those boxes 
+								if(up.contains(c.getBoundary())&&(angle<90||angle>275)){
+									c.rotate(-changeAngle);
+								}
+								if(up.contains(c.getBoundary())&&angle>90&&angle<265){
+									c.rotate(changeAngle);
+								}
+							}
+							for(Rectangle2D right:goRights){//makes it turn right in those boxes 
+								if(right.contains(c.getBoundary())&&angle<180&&angle>5){
+									c.rotate(-changeAngle);
+								}
+								if(right.contains(c.getBoundary())&&angle>180&&angle<355){
+									c.rotate(changeAngle);
+								}
+							}
+							for(Rectangle2D down:goDowns){//makes it turn down in those boxes 
+								if(down.contains(c.getBoundary())&&angle<270&&angle>95){
+									c.rotate(-changeAngle);
+								}
+								if(down.contains(c.getBoundary())&&(angle<85||angle>270)){
+									c.rotate(changeAngle);
+								}
 							}
 						}
-						for(Rectangle2D up:goUps){//makes it turn up in those boxes 
-							if(up.contains(temp.getBoundary())&&(angle<90||angle>275)){
-								temp.rotate(-changeAngle);
-							}
-							if(up.contains(temp.getBoundary())&&angle>90&&angle<265){
-								temp.rotate(changeAngle);
-							}
-						}
-						for(Rectangle2D right:goRights){//makes it turn right in those boxes 
-							if(right.contains(temp.getBoundary())&&angle<180&&angle>5){
-								temp.rotate(-changeAngle);
-							}
-							if(right.contains(temp.getBoundary())&&angle>180&&angle<355){
-								temp.rotate(changeAngle);
-							}
-						}
-						for(Rectangle2D down:goDowns){//makes it turn down in those boxes 
-							if(down.contains(temp.getBoundary())&&angle<270&&angle>95){
-								temp.rotate(-changeAngle);
-							}
-							if(down.contains(temp.getBoundary())&&(angle<85||angle>270)){
-								temp.rotate(changeAngle);
-							}
-						}
-
 					}
 
 				for(Car c:cars){//this does all the cars
+					for(Rectangle2D rect:boostArea){
+						if(rect.contains(c.getBoundary())){
+							c.setMaxVelocity(.2);
+						}else{
+							if(c==myCar)
+								c.setMaxVelocity(.1);
+							else
+								c.setMaxVelocity(Math.random()*.025+.1);
+						}
+					}
 					if(startingLines.get(0).intersects(c.getBoundary())&&c.canLap()){
 						c.setCanLap(false);
 						c.addLaps(c.lapsToAdd());
@@ -240,11 +288,13 @@ public class PaulKarts extends Application{
 						c.rotate(-c.getAngle());
 						c.rotate(270);
 					}
+
+
 					c.update(40);//pastNanoTime[0]-t is the change in time
 					c.render(gc);	
 				}
 
-				txt.setText(""+cars.get(0).getLapsCompleted());
+				txt.setText(""+myCar.getLapsCompleted());
 				pastNanoTime[0]=t;
 			}
 		}.start();

@@ -41,6 +41,7 @@ public class Border{
 		return borders;
 	}
 	public static void drawBoundries(GraphicsContext gc,int height,int width){
+		gc.save();
 		gc.setFill(Color.BLACK);
 		gc.setStroke(Color.BLACK);
 		gc.fillRect(0,0,width,5);
@@ -51,7 +52,7 @@ public class Border{
 		gc.fillRect(.7*width, .3*height, .07*width, .45*height);
 		gc.fillRect(.2*width,.5*height,.5*width,.1*height);
 		gc.fillRect(.15*width, .3*height, .07*width, .45*height);
-
+		gc.restore();
 	}
 
 	public static ArrayList<Rectangle2D> getTurnLeft(GraphicsContext gc,int height, int width){//Rectangle2D(double minX, double minY, double width, double height)
@@ -75,23 +76,24 @@ public class Border{
 		rects.add(new Rectangle2D(.4*width+.1*width,.2*height,.7*width-.4*width,.6*height-height*.3));
 		rects.add(new Rectangle2D(.15*width+.07*width,.3*height,.5*width-(.15*width + .07*width),.5*height-height*.3));
 		
+		gc.save();
 		gc.setFill(Color.RED);
 		gc.fillRect(.4*width+.1*width,.3*height,.7*width-.4*width,.5*height-height*.3);
 		gc.fillRect(.15*width+.07*width,.3*height,.4*width-(.15*width + .07*width),.5*height-height*.3);
-		gc.setFill(Color.BLACK);
+		gc.restore();
 		return rects;
 	}
 	
 	public static ArrayList<Rectangle2D> getUp(GraphicsContext gc,int height, int width){//Rectangle2D(double minX, double minY, double width, double height)
 		ArrayList<Rectangle2D> rects = new ArrayList<Rectangle2D>();
-		//TODO
+	
 		rects.add(new Rectangle2D(.2*width, .3*height, .2*width, .2*height));
 		rects.add(new Rectangle2D(.7*width, .3*height, .3*width, .7*height));
 		return rects;
 	}
 	public static ArrayList<Rectangle2D> getDown(GraphicsContext gc,int height, int width){//Rectangle2D(double minX, double minY, double width, double height)
 		ArrayList<Rectangle2D> rects = new ArrayList<Rectangle2D>();
-		//TODO
+		
 		rects.add(new Rectangle2D(.5*width,0,.25*width,.3*height));
 		rects.add(new Rectangle2D(0, 0, .22*width, .8*height));
 		rects.add(new Rectangle2D(.6*width,.6*height,.1*width,.1*height));
@@ -111,6 +113,7 @@ public class Border{
 		return rects;
 	}
 	public static void drawTurns(GraphicsContext gc,int height, int width){
+		gc.save();
 		//up
 		gc.setFill(Color.RED);
 		gc.fillRect(.2*width, .3*height, .2*width, .2*height);
@@ -129,13 +132,16 @@ public class Border{
 		gc.setFill(Color.GREEN);
 		gc.fillRect(-20,.7*height,.7*width+20,.3*height);
 		gc.fillRect(.2*width, .6*height, .4*width, .1*height);
-		gc.setFill(Color.BLACK);
+		
+		gc.restore();
 	}
 	
 	public static void drawStartingLine(GraphicsContext gc, int height, int width){
+		gc.save();
 		gc.setFill(Color.BLACK);
 		gc.fillRect(.7*width, .4*height, .3* width, 1);
 		gc.fillRect(.7*width, .4*height-2, .3* width, 1);
+		gc.restore();
 	}
 	
 	public static ArrayList<Rectangle2D> getStartingLine(int height, int width){
@@ -143,5 +149,17 @@ public class Border{
 		rects.add(new Rectangle2D(.7*width, .4*height, .3* width, 1));
 		rects.add(new Rectangle2D(.7*width, .4*height-2, .3* width, 1));
 		return rects;
+	}
+	
+	public static ArrayList<Rectangle2D> getBoost(int height, int width){
+		ArrayList<Rectangle2D> rects = new ArrayList<Rectangle2D>();
+		rects.add(new Rectangle2D(width*.22, height*.6, width*.48, height*.15));
+		return rects;
+	}
+	public static void drawBoost(GraphicsContext gc, int height, int width){
+		gc.save();
+		gc.setFill(Color.BLUE);
+		gc.fillRect(width*.22, height*.6, width*.48, height*.15);
+		gc.restore();
 	}
 }

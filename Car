@@ -2,7 +2,6 @@ package paulkarts;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.paint.Color;
 import javafx.scene.transform.Rotate;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.beans.property.ObjectProperty;
@@ -10,6 +9,7 @@ import javafx.geometry.Rectangle2D;
 
 public class Car
 {
+	private static double amountToDecrease=.0015;
 	private ImageView imageView;
 	private double positionX;
 	private double positionY;    
@@ -84,7 +84,7 @@ public class Car
 	public int getLapsCompleted(){return currentLap-1;}
 	public boolean canLap(){return canLap;}
 	public boolean canMove(){return canMove;}
-	
+
 	public int lapsToAdd(){
 		if(logicalXOR(velocity>0,angle>180)){
 			return -1;
@@ -109,13 +109,14 @@ public class Car
 		canMove=move;
 	}
 	public void rotate(double angleChange){
-		while(angleChange<0)
-			angleChange=(angleChange+360)%360;
-		angle+=angleChange+360;
-		angle%=360;
-		imageView.setRotate(angle);
+		if(canMove){
+			while(angleChange<0)
+				angleChange=(angleChange+360)%360;
+			angle+=angleChange+360;
+			angle%=360;
+			imageView.setRotate(angle);
+		}
 	}
-
 	public void setVelocity(double v)
 	{
 		velocity = v;
@@ -123,11 +124,13 @@ public class Car
 
 	public void addVelocity(double v)
 	{
-		velocity += v;
+		if(canMove)
+			velocity += v;
 	}
 
 	public void accelerate(double a){
-		acceleration+=a;
+		if(canMove)
+			acceleration+=a;
 	}
 	public void setAcceleration(double a){
 		acceleration=a;
@@ -172,37 +175,37 @@ public class Car
 
 	public void update(double time)//this is what gets run to update the position. vel, accel, etc.
 	{
-		if(canMove){
-			imageView.setRotate(angle);
-			if(!crash){
-				velocity += acceleration*time/10;
 
-				if(velocity>maxVel){//sets max speed
-					velocity=maxVel;
-				}else if(velocity<-maxVel){
-					velocity =-maxVel;
-				}
-				if(acceleration>10){//sets max acceleration
-					acceleration=10;
-				}else if(acceleration<-10){
-					acceleration =-10;
-				}
+		imageView.setRotate(angle);
+		if(!crash){
+			velocity += acceleration*time/10;
 
-				positionX += velocity * time * Math.cos(Math.toRadians(angle));
-				positionY += velocity * time * Math.sin(Math.toRadians(angle));
-
-				if(velocity>0){//slowing down
-					velocity-=.001;
-				}else if(velocity<0){
-					velocity+=.001;
-				}
-
-				if(velocity<.001&&velocity>0||velocity>-.001&&velocity<0){//gets rid of rounding errors 
-					velocity=0;
-				}
-
-				acceleration=0;
+			if(velocity>maxVel){//sets max speed
+				velocity=maxVel;
+			}else if(velocity<-maxVel){
+				velocity =-maxVel;
 			}
+			if(acceleration>10){//sets max acceleration
+				acceleration=10;
+			}else if(acceleration<-10){
+				acceleration =-10;
+			}
+
+			positionX += velocity * time * Math.cos(Math.toRadians(angle));
+			positionY += velocity * time * Math.sin(Math.toRadians(angle));
+
+			if(velocity>0){//slowing down
+				velocity-=amountToDecrease;
+			}else if(velocity<0){
+				velocity+=amountToDecrease;
+			}
+
+			if(velocity<amountToDecrease&&velocity>0||velocity>-amountToDecrease&&velocity<0){//gets rid of rounding errors 
+				velocity=0;
+			}
+
+			acceleration=0;
+
 		}
 	}
 

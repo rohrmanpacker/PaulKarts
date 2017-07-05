@@ -6,24 +6,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 public class Border{
-	private int width, height;
-
-	public Border(int height, int width){
-		this.height=height;
-		this.width=width;
-	}
-
-	public Border(){
-		this(600,800);
-	}
-
-	public ArrayList<Rectangle2D> getBorder(){
-		ArrayList<Rectangle2D> borders = new ArrayList<Rectangle2D>();
-
-
-		return borders;
-	}
-
+	
 	public static ArrayList<Rectangle2D> getBorder(int height, int width){
 		ArrayList<Rectangle2D> borders = new ArrayList<Rectangle2D>();
 		borders.add(new Rectangle2D(-20,-20,width+20,25));//top 
